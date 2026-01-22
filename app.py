@@ -3,6 +3,7 @@ import json
 import uuid
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, jsonify, send_file, session
+from werkzeug.utils import secure_filename
 from io import BytesIO
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -14,7 +15,16 @@ from reportlab.pdfbase.ttfonts import TTFont
 from PIL import Image as PILImage
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('SESSION_SECRET', 'dev-secret-key')
+app.secret_key = os.environ.get('SESSION_SECRET')
+if not app.secret_key:
+    import secrets
+    app.secret_key = secrets.token_hex(32)
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+MAX_FILE_SIZE = 5 * 1024 * 1024
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 DATA_DIR = 'data'
 UPLOAD_DIR = 'static/uploads'
@@ -322,15 +332,25 @@ def settings_page():
         
         if 'logo' in request.files:
             file = request.files['logo']
-            if file and file.filename:
-                filename = f"logo_{uuid.uuid4().hex[:8]}.png"
-                filepath = os.path.join(UPLOAD_DIR, filename)
+            if file and file.filename and allowed_file(file.filename):
+                file.seek(0, 2)
+                size = file.tell()
+                file.seek(0)
                 
-                img = PILImage.open(file)
-                img.thumbnail((400, 200))
-                img.save(filepath, 'PNG')
-                
-                settings['logo'] = filepath
+                if size <= MAX_FILE_SIZE:
+                    filename = f"logo_{uuid.uuid4().hex[:8]}.png"
+                    filepath = os.path.join(UPLOAD_DIR, filename)
+                    
+                    try:
+                        img = PILImage.open(file.stream)
+                        img.verify()
+                        file.seek(0)
+                        img = PILImage.open(file.stream)
+                        img.thumbnail((400, 200))
+                        img.save(filepath, 'PNG')
+                        settings['logo'] = filepath
+                    except Exception:
+                        pass
         
         save_settings(settings)
         return redirect(url_for('settings_page'))
