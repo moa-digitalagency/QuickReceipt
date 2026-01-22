@@ -1,0 +1,39 @@
+# QuickReceipt : Votre Solution de Gestion de Reçus
+
+QuickReceipt est une application web intuitive et moderne conçue pour simplifier la création, la gestion et le partage de reçus pour les indépendants et les petites entreprises. Fini la paperasse et les reçus manuscrits, place à une solution numérique, professionnelle et efficace.
+
+## ✨ Fonctionnalités Principales
+
+### 🚀 Tableau de Bord
+- **Création Rapide :** Générez de nouveaux reçus en quelques secondes directement depuis le tableau de bord.
+- **Vue d'Ensemble :** Visualisez instantanément vos derniers reçus pour un suivi facile.
+
+### 👥 Gestion des Clients
+- **Base de Données Centralisée :** Gérez facilement votre liste de clients (création, modification, suppression).
+- **Informations Clés :** Enregistrez les informations essentielles de vos clients, y compris leur nom, numéro WhatsApp et adresse e-mail pour une communication simplifiée.
+
+### 🧾 Gestion des Reçus
+- **Création Personnalisée :** Créez des reçus détaillés incluant la description des services, le montant et le moyen de paiement.
+- **Téléchargement en PDF :** Convertissez n'importe quel reçu en un fichier PDF professionnel d'un simple clic, prêt à être archivé ou partagé.
+- **Partage Facilité :** Préparez des messages pré-remplis pour WhatsApp et e-mail. Il vous suffit de télécharger le PDF et de le joindre à votre message.
+- **Historique Complet :** Accédez à une liste complète de tous vos reçus, triés par date pour une consultation aisée.
+
+### ⚙️ Paramètres de l'Entreprise
+- **Personnalisation :** Configurez le profil de votre entreprise avec votre nom, logo, adresse, numéro d'identification fiscale (ICE/SIRET) et téléphone.
+- **Image de Marque :** Toutes ces informations sont automatiquement ajoutées à chaque reçu pour une apparence professionnelle et cohérente.
+
+### 🌍 Internationalisation (i18n)
+- **Multilingue :** L'application est disponible en **Français (par défaut)**, **Anglais** et **Arabe**.
+- **Sélecteur de Langue :** Changez de langue à tout moment grâce au sélecteur intuitif dans l'en-tête.
+- **Direction du Texte (RTL) :** L'interface s'adapte automatiquement pour les langues qui se lisent de droite à gauche, comme l'arabe.
+
+### 📱 Conception Responsive
+- **Accessible Partout :** Que vous soyez sur un ordinateur de bureau, une tablette ou un smartphone, l'interface s'adapte parfaitement à la taille de votre écran pour une expérience utilisateur optimale.
+
+## 🛠️ Pile Technique
+
+- **Backend :** Python Flask
+- **Interface Utilisateur :** HTML, JS, Tailwind CSS
+- **Internationalisation :** Solution i18n personnalisée
+
+QuickReceipt est l'outil idéal pour moderniser votre processus de facturation et présenter une image professionnelle à vos clients.
