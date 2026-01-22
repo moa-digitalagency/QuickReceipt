@@ -17,43 +17,44 @@ class User(db.Model):
     id = db.Column(db.String(36), primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(20), nullable=False, default='company')
-    company_id = db.Column(db.String(36), db.ForeignKey('companies.id'), nullable=True)
+    role = db.Column(db.String(20), nullable=False, default='user')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
+    
+    companies = db.relationship('Company', backref='owner', lazy=True)
+    clients = db.relationship('Client', backref='owner', lazy=True)
+    receipts = db.relationship('Receipt', backref='owner', lazy=True)
 
 class Company(db.Model):
     __tablename__ = 'companies'
     
     id = db.Column(db.String(36), primary_key=True)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     address = db.Column(db.Text, default='')
     tax_id = db.Column(db.String(100), default='')
     phone = db.Column(db.String(50), default='')
     logo = db.Column(db.String(255), default='')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    receipts = db.relationship('Receipt', backref='company', lazy=True)
-    users = db.relationship('User', backref='company', lazy=True)
 
 class Client(db.Model):
     __tablename__ = 'clients'
     
     id = db.Column(db.String(36), primary_key=True)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     whatsapp = db.Column(db.String(50), default='')
     email = db.Column(db.String(255), default='')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    receipts = db.relationship('Receipt', backref='client', lazy=True)
 
 class Receipt(db.Model):
     __tablename__ = 'receipts'
     
     id = db.Column(db.String(36), primary_key=True)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
     receipt_number = db.Column(db.String(50), unique=True, nullable=False)
-    client_id = db.Column(db.String(36), db.ForeignKey('clients.id'), nullable=True)
-    company_id = db.Column(db.String(36), db.ForeignKey('companies.id'), nullable=True)
+    client_id = db.Column(db.String(36), nullable=True)
+    company_id = db.Column(db.String(36), nullable=True)
     description = db.Column(db.Text, nullable=False)
     amount = db.Column(db.Numeric(10, 2), nullable=False)
     payment_method = db.Column(db.String(50), nullable=False)
@@ -63,18 +64,13 @@ class Settings(db.Model):
     __tablename__ = 'settings'
     
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=True)
     thermal_width = db.Column(db.Integer, default=58)
 
 def init_database(app):
     db.init_app(app)
     with app.app_context():
         db.create_all()
-        
-        existing_settings = Settings.query.first()
-        if not existing_settings:
-            default_settings = Settings(thermal_width=58)
-            db.session.add(default_settings)
-            db.session.commit()
         
         existing_admin = User.query.filter_by(username=os.environ.get('ADMIN_USERNAME', 'admin')).first()
         if not existing_admin:
@@ -86,7 +82,6 @@ def init_database(app):
                 username=admin_username,
                 password_hash=generate_password_hash(admin_password),
                 role='superadmin',
-                company_id=None,
                 created_at=datetime.utcnow(),
                 is_active=True
             )

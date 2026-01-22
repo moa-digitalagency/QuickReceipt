@@ -7,12 +7,14 @@ dashboard_bp = Blueprint('dashboard', __name__)
 
 @dashboard_bp.route('/')
 def index():
-    receipts = Receipt.get_sorted(limit=5)
-    clients = Client.get_all()
-    settings = Settings.get()
+    user_id = session.get('user_id')
     
-    total_amount = Receipt.total_amount()
-    total_receipts = Receipt.count()
+    receipts = Receipt.get_sorted(user_id=user_id, limit=5)
+    clients = Client.get_all(user_id=user_id)
+    settings = Settings.get(user_id=user_id)
+    
+    total_amount = Receipt.total_amount(user_id=user_id)
+    total_receipts = Receipt.count(user_id=user_id)
     total_clients = len(clients)
     
     return render_template('dashboard.html', 

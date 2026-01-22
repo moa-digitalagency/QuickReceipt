@@ -23,7 +23,6 @@
                         <tr>
                             <th class="px-4 sm:px-6 py-4 text-{{ 'right' if is_rtl else 'left' }} text-sm font-semibold text-gray-900">{{ t('users.username') }}</th>
                             <th class="px-4 sm:px-6 py-4 text-{{ 'right' if is_rtl else 'left' }} text-sm font-semibold text-gray-900">{{ t('users.role') }}</th>
-                            <th class="px-4 sm:px-6 py-4 text-{{ 'right' if is_rtl else 'left' }} text-sm font-semibold text-gray-900 hidden sm:table-cell">{{ t('users.company') }}</th>
                             <th class="px-4 sm:px-6 py-4 text-{{ 'right' if is_rtl else 'left' }} text-sm font-semibold text-gray-900">{{ t('users.status') }}</th>
                             <th class="px-4 sm:px-6 py-4"></th>
                         </tr>
@@ -37,11 +36,8 @@
                             <td class="px-4 sm:px-6 py-4">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
                                     {% if user.role == 'superadmin' %}bg-purple-100 text-purple-800{% else %}bg-blue-100 text-blue-800{% endif %}">
-                                    {{ 'Super Admin' if user.role == 'superadmin' else 'Entreprise' }}
+                                    {{ t('users.role_superadmin') if user.role == 'superadmin' else t('users.role_user') }}
                                 </span>
-                            </td>
-                            <td class="px-4 sm:px-6 py-4 hidden sm:table-cell text-gray-600">
-                                {{ company_map.get(user.company_id, {}).get('name', '-') if user.company_id else '-' }}
                             </td>
                             <td class="px-4 sm:px-6 py-4">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 

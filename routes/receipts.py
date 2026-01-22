@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, send_file, jsonify, session
+from flask import Blueprint, render_template, request, redirect, url_for, send_file, session
 
 from models import Client, Receipt, Settings, Company
 from services.pdf import generate_receipt_pdf
@@ -8,8 +8,9 @@ receipts_bp = Blueprint('receipts', __name__, url_prefix='/receipts')
 
 @receipts_bp.route('/')
 def list_receipts():
-    receipts = Receipt.get_sorted()
-    client_map = Client.get_map()
+    user_id = session.get('user_id')
+    receipts = Receipt.get_sorted(user_id=user_id)
+    client_map = Client.get_map(user_id=user_id)
     
     for receipt in receipts:
         client = client_map.get(receipt.get('client_id'))
@@ -19,8 +20,9 @@ def list_receipts():
 
 @receipts_bp.route('/add', methods=['GET', 'POST'])
 def add_receipt():
-    clients = Client.get_all()
-    companies = Company.get_all()
+    user_id = session.get('user_id')
+    clients = Client.get_all(user_id=user_id)
+    companies = Company.get_all(user_id=user_id)
     
     if request.method == 'POST':
         client_id = request.form.get('client_id', '')
@@ -30,6 +32,7 @@ def add_receipt():
         
         if client_id == 'new' and new_client_name:
             new_client = Client.create(
+                user_id=user_id,
                 name=new_client_name,
                 whatsapp=request.form.get('new_client_whatsapp', ''),
                 email=request.form.get('new_client_email', '')
@@ -40,10 +43,11 @@ def add_receipt():
                                  error="Veuillez entrer le nom du client")
         elif not client_id:
             return render_template('receipt_form.html', receipt=None, clients=clients, companies=companies,
-                                 error="Veuillez sélectionner ou ajouter un client")
+                                 error="Veuillez selectionner ou ajouter un client")
         
         if company_id == 'new' and new_company_name:
             new_company = Company.create(
+                user_id=user_id,
                 name=new_company_name,
                 address=request.form.get('new_company_address', ''),
                 tax_id=request.form.get('new_company_tax_id', ''),
@@ -55,9 +59,10 @@ def add_receipt():
                                  error="Veuillez entrer le nom de l'entreprise")
         elif not company_id:
             return render_template('receipt_form.html', receipt=None, clients=clients, companies=companies,
-                                 error="Veuillez sélectionner ou ajouter une entreprise")
+                                 error="Veuillez selectionner ou ajouter une entreprise")
         
         new_receipt = Receipt.create(
+            user_id=user_id,
             client_id=client_id,
             company_id=company_id,
             description=request.form.get('description', ''),
@@ -72,46 +77,50 @@ def add_receipt():
 
 @receipts_bp.route('/saved/<receipt_id>')
 def receipt_saved(receipt_id):
-    receipt = Receipt.get_by_id(receipt_id)
+    user_id = session.get('user_id')
+    receipt = Receipt.get_by_id(receipt_id, user_id=user_id)
     if not receipt:
         return redirect(url_for('receipts.list_receipts'))
     
-    client = Client.get_by_id(receipt.get('client_id'))
+    client = Client.get_by_id(receipt.get('client_id'), user_id=user_id)
     receipt['client'] = client
-    company = Company.get_by_id(receipt.get('company_id'))
+    company = Company.get_by_id(receipt.get('company_id'), user_id=user_id)
     receipt['company'] = company
-    settings = Settings.get()
+    settings = Settings.get(user_id=user_id)
     
     return render_template('receipt_saved.html', receipt=receipt, settings=settings)
 
 @receipts_bp.route('/view/<receipt_id>')
 def view_receipt(receipt_id):
-    receipt = Receipt.get_by_id(receipt_id)
+    user_id = session.get('user_id')
+    receipt = Receipt.get_by_id(receipt_id, user_id=user_id)
     if not receipt:
         return redirect(url_for('receipts.list_receipts'))
     
-    client = Client.get_by_id(receipt.get('client_id'))
+    client = Client.get_by_id(receipt.get('client_id'), user_id=user_id)
     receipt['client'] = client
-    company = Company.get_by_id(receipt.get('company_id'))
+    company = Company.get_by_id(receipt.get('company_id'), user_id=user_id)
     receipt['company'] = company
-    settings = Settings.get()
+    settings = Settings.get(user_id=user_id)
     
     return render_template('receipt_view.html', receipt=receipt, settings=settings)
 
 @receipts_bp.route('/delete/<receipt_id>', methods=['POST'])
 def delete_receipt(receipt_id):
-    Receipt.delete(receipt_id)
+    user_id = session.get('user_id')
+    Receipt.delete(receipt_id, user_id=user_id)
     return redirect(url_for('receipts.list_receipts'))
 
 @receipts_bp.route('/pdf/<receipt_id>')
 def download_pdf(receipt_id):
-    receipt = Receipt.get_by_id(receipt_id)
+    user_id = session.get('user_id')
+    receipt = Receipt.get_by_id(receipt_id, user_id=user_id)
     if not receipt:
         return redirect(url_for('receipts.list_receipts'))
     
-    client = Client.get_by_id(receipt.get('client_id'))
-    company = Company.get_by_id(receipt.get('company_id'))
-    settings = Settings.get()
+    client = Client.get_by_id(receipt.get('client_id'), user_id=user_id)
+    company = Company.get_by_id(receipt.get('company_id'), user_id=user_id)
+    settings = Settings.get(user_id=user_id)
     
     buffer = generate_receipt_pdf(receipt, client, company, settings)
     
@@ -124,13 +133,14 @@ def download_pdf(receipt_id):
 
 @receipts_bp.route('/thermal/<receipt_id>')
 def download_thermal(receipt_id):
-    receipt = Receipt.get_by_id(receipt_id)
+    user_id = session.get('user_id')
+    receipt = Receipt.get_by_id(receipt_id, user_id=user_id)
     if not receipt:
         return redirect(url_for('receipts.list_receipts'))
     
-    client = Client.get_by_id(receipt.get('client_id'))
-    company = Company.get_by_id(receipt.get('company_id'))
-    settings = Settings.get()
+    client = Client.get_by_id(receipt.get('client_id'), user_id=user_id)
+    company = Company.get_by_id(receipt.get('company_id'), user_id=user_id)
+    settings = Settings.get(user_id=user_id)
     
     buffer = generate_thermal_receipt(receipt, client, company, settings)
     

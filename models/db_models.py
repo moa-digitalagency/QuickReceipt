@@ -31,13 +31,12 @@ class User:
         return None
     
     @staticmethod
-    def create(username, password, role='company', company_id=None):
+    def create(username, password, role='user'):
         new_user = UserModel(
             id=str(uuid.uuid4()),
             username=username,
             password_hash=generate_password_hash(password),
             role=role,
-            company_id=company_id if company_id else None,
             created_at=datetime.utcnow(),
             is_active=True
         )
@@ -73,28 +72,34 @@ class User:
             'id': user.id,
             'username': user.username,
             'role': user.role,
-            'company_id': user.company_id,
             'is_active': user.is_active,
             'created_at': user.created_at.isoformat() if user.created_at else ''
         }
 
 class Company:
     @staticmethod
-    def get_all():
-        companies = CompanyModel.query.order_by(CompanyModel.created_at.desc()).all()
+    def get_all(user_id=None):
+        query = CompanyModel.query
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        companies = query.order_by(CompanyModel.created_at.desc()).all()
         return [Company._to_dict(c) for c in companies]
     
     @staticmethod
-    def get_by_id(company_id):
+    def get_by_id(company_id, user_id=None):
         if not company_id:
             return None
-        company = CompanyModel.query.get(company_id)
+        query = CompanyModel.query.filter_by(id=company_id)
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        company = query.first()
         return Company._to_dict(company) if company else None
     
     @staticmethod
-    def create(name, address='', tax_id='', phone='', logo=''):
+    def create(user_id, name, address='', tax_id='', phone='', logo=''):
         new_company = CompanyModel(
             id=str(uuid.uuid4()),
+            user_id=user_id,
             name=name,
             address=address,
             tax_id=tax_id,
@@ -107,19 +112,25 @@ class Company:
         return Company._to_dict(new_company)
     
     @staticmethod
-    def update(company_id, **kwargs):
-        company = CompanyModel.query.get(company_id)
+    def update(company_id, user_id=None, **kwargs):
+        query = CompanyModel.query.filter_by(id=company_id)
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        company = query.first()
         if company:
             for key, value in kwargs.items():
-                if hasattr(company, key):
+                if hasattr(company, key) and key not in ['id', 'user_id']:
                     setattr(company, key, value)
             db.session.commit()
             return Company._to_dict(company)
         return None
     
     @staticmethod
-    def delete(company_id):
-        company = CompanyModel.query.get(company_id)
+    def delete(company_id, user_id=None):
+        query = CompanyModel.query.filter_by(id=company_id)
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        company = query.first()
         if company:
             db.session.delete(company)
             db.session.commit()
@@ -130,6 +141,7 @@ class Company:
             return None
         return {
             'id': company.id,
+            'user_id': company.user_id,
             'name': company.name,
             'address': company.address,
             'tax_id': company.tax_id,
@@ -140,26 +152,36 @@ class Company:
 
 class Client:
     @staticmethod
-    def get_all():
-        clients = ClientModel.query.order_by(ClientModel.name).all()
+    def get_all(user_id=None):
+        query = ClientModel.query
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        clients = query.order_by(ClientModel.name).all()
         return [Client._to_dict(c) for c in clients]
     
     @staticmethod
-    def get_by_id(client_id):
+    def get_by_id(client_id, user_id=None):
         if not client_id:
             return None
-        client = ClientModel.query.get(client_id)
+        query = ClientModel.query.filter_by(id=client_id)
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        client = query.first()
         return Client._to_dict(client) if client else None
     
     @staticmethod
-    def get_map():
-        clients = ClientModel.query.all()
+    def get_map(user_id=None):
+        query = ClientModel.query
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        clients = query.all()
         return {c.id: Client._to_dict(c) for c in clients}
     
     @staticmethod
-    def create(name, whatsapp='', email=''):
+    def create(user_id, name, whatsapp='', email=''):
         new_client = ClientModel(
             id=str(uuid.uuid4()),
+            user_id=user_id,
             name=name,
             whatsapp=whatsapp,
             email=email,
@@ -170,26 +192,35 @@ class Client:
         return Client._to_dict(new_client)
     
     @staticmethod
-    def update(client_id, **kwargs):
-        client = ClientModel.query.get(client_id)
+    def update(client_id, user_id=None, **kwargs):
+        query = ClientModel.query.filter_by(id=client_id)
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        client = query.first()
         if client:
             for key, value in kwargs.items():
-                if hasattr(client, key):
+                if hasattr(client, key) and key not in ['id', 'user_id']:
                     setattr(client, key, value)
             db.session.commit()
             return Client._to_dict(client)
         return None
     
     @staticmethod
-    def delete(client_id):
-        client = ClientModel.query.get(client_id)
+    def delete(client_id, user_id=None):
+        query = ClientModel.query.filter_by(id=client_id)
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        client = query.first()
         if client:
             db.session.delete(client)
             db.session.commit()
     
     @staticmethod
-    def count():
-        return ClientModel.query.count()
+    def count(user_id=None):
+        query = ClientModel.query
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        return query.count()
     
     @staticmethod
     def _to_dict(client):
@@ -197,6 +228,7 @@ class Client:
             return None
         return {
             'id': client.id,
+            'user_id': client.user_id,
             'name': client.name,
             'whatsapp': client.whatsapp,
             'email': client.email,
@@ -205,32 +237,42 @@ class Client:
 
 class Receipt:
     @staticmethod
-    def get_all():
-        receipts = ReceiptModel.query.all()
+    def get_all(user_id=None):
+        query = ReceiptModel.query
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        receipts = query.all()
         return [Receipt._to_dict(r) for r in receipts]
     
     @staticmethod
-    def get_by_id(receipt_id):
+    def get_by_id(receipt_id, user_id=None):
         if not receipt_id:
             return None
-        receipt = ReceiptModel.query.get(receipt_id)
+        query = ReceiptModel.query.filter_by(id=receipt_id)
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        receipt = query.first()
         return Receipt._to_dict(receipt) if receipt else None
     
     @staticmethod
-    def get_sorted(limit=None):
-        query = ReceiptModel.query.order_by(ReceiptModel.created_at.desc())
+    def get_sorted(user_id=None, limit=None):
+        query = ReceiptModel.query
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        query = query.order_by(ReceiptModel.created_at.desc())
         if limit:
             query = query.limit(limit)
         receipts = query.all()
         return [Receipt._to_dict(r) for r in receipts]
     
     @staticmethod
-    def create(client_id, description, amount, payment_method, company_id=''):
-        count = ReceiptModel.query.count()
+    def create(user_id, client_id, description, amount, payment_method, company_id=''):
+        count = ReceiptModel.query.filter_by(user_id=user_id).count()
         receipt_number = f"REC-{datetime.now().strftime('%Y%m%d')}-{count + 1:04d}"
         
         new_receipt = ReceiptModel(
             id=str(uuid.uuid4()),
+            user_id=user_id,
             receipt_number=receipt_number,
             client_id=client_id if client_id else None,
             company_id=company_id if company_id else None,
@@ -244,20 +286,29 @@ class Receipt:
         return Receipt._to_dict(new_receipt)
     
     @staticmethod
-    def delete(receipt_id):
-        receipt = ReceiptModel.query.get(receipt_id)
+    def delete(receipt_id, user_id=None):
+        query = ReceiptModel.query.filter_by(id=receipt_id)
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        receipt = query.first()
         if receipt:
             db.session.delete(receipt)
             db.session.commit()
     
     @staticmethod
-    def count():
-        return ReceiptModel.query.count()
+    def count(user_id=None):
+        query = ReceiptModel.query
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        return query.count()
     
     @staticmethod
-    def total_amount():
+    def total_amount(user_id=None):
         from sqlalchemy import func
-        result = db.session.query(func.sum(ReceiptModel.amount)).scalar()
+        query = db.session.query(func.sum(ReceiptModel.amount))
+        if user_id:
+            query = query.filter(ReceiptModel.user_id == user_id)
+        result = query.scalar()
         return float(result) if result else 0
     
     @staticmethod
@@ -266,6 +317,7 @@ class Receipt:
             return None
         return {
             'id': receipt.id,
+            'user_id': receipt.user_id,
             'receipt_number': receipt.receipt_number,
             'client_id': receipt.client_id,
             'company_id': receipt.company_id,
@@ -277,17 +329,20 @@ class Receipt:
 
 class Settings:
     @staticmethod
-    def get():
-        settings = SettingsModel.query.first()
+    def get(user_id=None):
+        query = SettingsModel.query
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        settings = query.first()
         if settings:
             return {'thermal_width': settings.thermal_width}
         return {'thermal_width': 58}
     
     @staticmethod
-    def save(settings_dict):
-        settings = SettingsModel.query.first()
+    def save(user_id, settings_dict):
+        settings = SettingsModel.query.filter_by(user_id=user_id).first()
         if not settings:
-            settings = SettingsModel()
+            settings = SettingsModel(user_id=user_id)
             db.session.add(settings)
         settings.thermal_width = settings_dict.get('thermal_width', 58)
         db.session.commit()
