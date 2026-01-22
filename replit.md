@@ -8,7 +8,7 @@ QuickReceipt is a web application for managing receipts, designed for freelancer
 - **Frontend**: HTML, JavaScript, Tailwind CSS (via CDN)
 - **PDF Generation**: ReportLab
 - **Image Processing**: Pillow
-- **Data Storage**: JSON files (in `data/` directory)
+- **Data Storage**: PostgreSQL database (SQLAlchemy ORM)
 - **Internationalization**: Custom i18n solution with French, English, and Arabic support
 
 ## Project Structure
@@ -72,7 +72,7 @@ QuickReceipt is a web application for managing receipts, designed for freelancer
 - **Multi-company support**: Configure multiple companies in settings, select one per receipt
 - Receipt creation with inline client/company quick-add
 - PDF A4 generation for professional receipts
-- Thermal receipt image generation (58mm/80mm configurable)
+- Thermal receipt image generation (48mm/57mm/58mm/80mm configurable)
 - Receipt history sorted by date
 - **Optional ICE/SIRET**: Only displayed in receipts when provided
 - **WhatsApp sharing to client's number**: Uses client's WhatsApp from their data
@@ -101,8 +101,11 @@ The application runs on port 5000.
 - `/api/share/<id>` - Get share data for WhatsApp/Email
 
 ## Recent Changes
+- Migrated data storage to PostgreSQL database with SQLAlchemy ORM
+- Added init_db.py for database initialization
 - Added multi-company support with CRUD operations
-- Added thermal receipt image generation (58mm/80mm)
+- Added thermal receipt image generation (48mm/57mm/58mm/80mm)
+- Improved WhatsApp message formatting with structured layout
 - Added post-save popup with download/share options
 - Added inline client and company creation in receipt form
 - Made ICE/SIRET optional, displayed only when provided

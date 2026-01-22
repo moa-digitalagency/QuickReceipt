@@ -12,7 +12,7 @@ def settings_page():
     
     if request.method == 'POST':
         thermal_width = int(request.form.get('thermal_width', 58))
-        settings['thermal_width'] = thermal_width if thermal_width in [58, 80] else 58
+        settings['thermal_width'] = thermal_width if thermal_width in [48, 57, 58, 80] else 58
         Settings.save(settings)
         return redirect(url_for('settings.settings_page'))
     

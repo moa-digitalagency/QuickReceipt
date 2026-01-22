@@ -4,13 +4,19 @@ from flask import Flask
 from security import get_secret_key
 from routes import register_routes
 from utils.i18n import t, get_locale
+from init_db import db, init_database
 
 app = Flask(__name__)
 app.secret_key = get_secret_key()
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_recycle': 300,
+    'pool_pre_ping': True,
+}
 
-os.makedirs('data', exist_ok=True)
 os.makedirs('static/uploads', exist_ok=True)
 
+init_database(app)
 register_routes(app)
 
 @app.context_processor

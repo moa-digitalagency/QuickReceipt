@@ -5,16 +5,47 @@ def get_share_message(receipt, client, company):
     client_name = client.get('name', '') if client else ''
     amount = receipt.get('amount', '0')
     receipt_number = receipt.get('receipt_number', '')
+    description = receipt.get('description', '')
+    date_str = receipt.get('created_at', '')[:10] if receipt.get('created_at') else ''
     
-    message = t('receipts.share_message').format(
-        client_name=client_name,
-        company_name=company_name,
-        receipt_number=receipt_number,
-        amount=amount
-    )
+    payment_methods = {
+        'cash': 'Especes',
+        'card': 'Carte bancaire',
+        'transfer': 'Virement',
+        'check': 'Cheque'
+    }
+    payment_text = payment_methods.get(receipt.get('payment_method', ''), receipt.get('payment_method', ''))
     
-    if company and company.get('tax_id'):
-        message += f"\n\nICE/SIRET: {company['tax_id']}"
+    lines = []
+    lines.append(f"*{company_name}*")
+    
+    if company:
+        if company.get('address'):
+            lines.append(company['address'].replace('\n', ', '))
+        if company.get('phone'):
+            lines.append(f"Tel: {company['phone']}")
+        if company.get('tax_id'):
+            lines.append(f"ICE/SIRET: {company['tax_id']}")
+    
+    lines.append("")
+    lines.append("━━━━━━━━━━━━━━━━━━━━")
+    lines.append(f"*RECU N° {receipt_number}*")
+    lines.append(f"Date: {date_str}")
+    lines.append("━━━━━━━━━━━━━━━━━━━━")
+    lines.append("")
+    lines.append(f"Client: *{client_name}*")
+    lines.append("")
+    lines.append(f"Description:")
+    lines.append(description)
+    lines.append("")
+    lines.append("━━━━━━━━━━━━━━━━━━━━")
+    lines.append(f"*TOTAL: {amount} MAD*")
+    lines.append(f"Paiement: {payment_text}")
+    lines.append("━━━━━━━━━━━━━━━━━━━━")
+    lines.append("")
+    lines.append("_Merci pour votre confiance!_")
+    
+    message = '\n'.join(lines)
     
     return {
         'message': message,
