@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, session, redirect, url_for, request
 
 from security import get_secret_key
 from routes import register_routes
@@ -19,13 +19,29 @@ os.makedirs('static/uploads', exist_ok=True)
 init_database(app)
 register_routes(app)
 
+PUBLIC_ROUTES = ['auth.login', 'auth.logout', 'static']
+
+@app.before_request
+def check_login():
+    if request.endpoint in PUBLIC_ROUTES or (request.endpoint and request.endpoint.startswith('static')):
+        return
+    if 'user_id' not in session and request.endpoint != 'auth.login':
+        return redirect(url_for('auth.login'))
+
 @app.context_processor
 def inject_globals():
     locale = get_locale()
     return {
         't': t,
         'locale': locale,
-        'is_rtl': locale == 'ar'
+        'is_rtl': locale == 'ar',
+        'current_user': {
+            'id': session.get('user_id'),
+            'username': session.get('username'),
+            'role': session.get('user_role'),
+            'company_id': session.get('company_id')
+        } if 'user_id' in session else None,
+        'is_superadmin': session.get('user_role') == 'superadmin'
     }
 
 if __name__ == '__main__':

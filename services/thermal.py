@@ -8,26 +8,43 @@ def generate_thermal_receipt(receipt, client, company, settings):
     dpi = 203
     width_px = int(thermal_width_mm * dpi / 25.4)
     
-    margin = 10
-    line_height = 24
-    small_line_height = 20
+    margin = 8
     
-    lines_needed = 25
-    height_px = lines_needed * line_height + 100
+    if thermal_width_mm <= 48:
+        font_size_bold = 14
+        font_size_normal = 12
+        font_size_small = 10
+        line_height = 22
+        small_line_height = 18
+    elif thermal_width_mm <= 58:
+        font_size_bold = 18
+        font_size_normal = 14
+        font_size_small = 12
+        line_height = 28
+        small_line_height = 22
+    else:
+        font_size_bold = 22
+        font_size_normal = 16
+        font_size_small = 14
+        line_height = 32
+        small_line_height = 26
+    
+    lines_needed = 30
+    height_px = lines_needed * line_height + 150
     
     img = Image.new('RGB', (width_px, height_px), 'white')
     draw = ImageDraw.Draw(img)
     
     try:
-        font_bold = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 14)
-        font_normal = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 12)
-        font_small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 10)
+        font_bold = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size_bold)
+        font_normal = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", font_size_normal)
+        font_small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", font_size_small)
     except:
         font_bold = ImageFont.load_default()
         font_normal = ImageFont.load_default()
         font_small = ImageFont.load_default()
     
-    y = margin
+    y = margin + 5
     
     company_name = company.get('name', '') if company else 'QuickReceipt'
     if company_name:
@@ -35,7 +52,7 @@ def generate_thermal_receipt(receipt, client, company, settings):
         text_width = text_bbox[2] - text_bbox[0]
         x = (width_px - text_width) // 2
         draw.text((x, y), company_name, fill='black', font=font_bold)
-        y += line_height
+        y += line_height + 2
     
     if company and company.get('address'):
         address_lines = company['address'].split('\n')
@@ -56,16 +73,16 @@ def generate_thermal_receipt(receipt, client, company, settings):
         y += small_line_height
     
     if company and company.get('tax_id'):
-        tax_text = f"ICE/SIRET: {company['tax_id']}"
+        tax_text = f"ICE: {company['tax_id']}"
         text_bbox = draw.textbbox((0, 0), tax_text, font=font_small)
         text_width = text_bbox[2] - text_bbox[0]
         x = (width_px - text_width) // 2
         draw.text((x, y), tax_text, fill='black', font=font_small)
         y += small_line_height
     
-    y += 5
-    draw.line([(margin, y), (width_px - margin, y)], fill='black', width=1)
-    y += 10
+    y += 8
+    draw.line([(margin, y), (width_px - margin, y)], fill='black', width=2)
+    y += 12
     
     receipt_text = f"RECU N: {receipt.get('receipt_number', '')}"
     text_bbox = draw.textbbox((0, 0), receipt_text, font=font_bold)
@@ -82,35 +99,52 @@ def generate_thermal_receipt(receipt, client, company, settings):
     draw.text((x, y), date_text, fill='black', font=font_normal)
     y += line_height
     
-    y += 5
+    y += 8
     draw.line([(margin, y), (width_px - margin, y)], fill='black', width=1)
-    y += 10
+    y += 12
     
     if client:
-        draw.text((margin, y), f"Client: {client.get('name', '')}", fill='black', font=font_normal)
+        client_text = f"Client: {client.get('name', '')}"
+        text_bbox = draw.textbbox((0, 0), client_text, font=font_normal)
+        text_width = text_bbox[2] - text_bbox[0]
+        x = (width_px - text_width) // 2
+        draw.text((x, y), client_text, fill='black', font=font_normal)
         y += line_height
     
-    y += 5
+    y += 8
     draw.line([(margin, y), (width_px - margin, y)], fill='black', width=1)
-    y += 10
+    y += 12
     
     description = receipt.get('description', '')
-    max_chars = (width_px - 2 * margin) // 7
-    desc_lines = [description[i:i+max_chars] for i in range(0, len(description), max_chars)]
-    for desc_line in desc_lines[:3]:
+    max_chars = max(10, (width_px - 2 * margin) // (font_size_normal // 2))
+    desc_lines = []
+    words = description.split(' ')
+    current_line = ''
+    for word in words:
+        test_line = current_line + ' ' + word if current_line else word
+        if len(test_line) <= max_chars:
+            current_line = test_line
+        else:
+            if current_line:
+                desc_lines.append(current_line)
+            current_line = word
+    if current_line:
+        desc_lines.append(current_line)
+    
+    for desc_line in desc_lines[:4]:
         draw.text((margin, y), desc_line, fill='black', font=font_normal)
         y += small_line_height
     
-    y += 10
-    draw.line([(margin, y), (width_px - margin, y)], fill='black', width=2)
-    y += 10
+    y += 12
+    draw.line([(margin, y), (width_px - margin, y)], fill='black', width=3)
+    y += 15
     
     amount_text = f"TOTAL: {receipt.get('amount', '0')} MAD"
     text_bbox = draw.textbbox((0, 0), amount_text, font=font_bold)
     text_width = text_bbox[2] - text_bbox[0]
     x = (width_px - text_width) // 2
     draw.text((x, y), amount_text, fill='black', font=font_bold)
-    y += line_height
+    y += line_height + 5
     
     payment_methods = {
         'cash': 'Especes',
@@ -126,16 +160,16 @@ def generate_thermal_receipt(receipt, client, company, settings):
     draw.text((x, y), pay_text, fill='black', font=font_normal)
     y += line_height
     
-    y += 10
+    y += 12
     draw.line([(margin, y), (width_px - margin, y)], fill='black', width=1)
-    y += 10
+    y += 15
     
     thanks = "Merci pour votre confiance!"
     text_bbox = draw.textbbox((0, 0), thanks, font=font_small)
     text_width = text_bbox[2] - text_bbox[0]
     x = (width_px - text_width) // 2
     draw.text((x, y), thanks, fill='black', font=font_small)
-    y += small_line_height + 10
+    y += small_line_height + 15
     
     img = img.crop((0, 0, width_px, y))
     

@@ -1,6 +1,82 @@
 import uuid
 from datetime import datetime
-from init_db import db, Company as CompanyModel, Client as ClientModel, Receipt as ReceiptModel, Settings as SettingsModel
+from init_db import db, Company as CompanyModel, Client as ClientModel, Receipt as ReceiptModel, Settings as SettingsModel, User as UserModel
+from werkzeug.security import generate_password_hash, check_password_hash
+
+class User:
+    @staticmethod
+    def get_all():
+        users = UserModel.query.order_by(UserModel.created_at.desc()).all()
+        return [User._to_dict(u) for u in users]
+    
+    @staticmethod
+    def get_by_id(user_id):
+        if not user_id:
+            return None
+        user = UserModel.query.get(user_id)
+        return User._to_dict(user) if user else None
+    
+    @staticmethod
+    def get_by_username(username):
+        if not username:
+            return None
+        user = UserModel.query.filter_by(username=username).first()
+        return User._to_dict(user) if user else None
+    
+    @staticmethod
+    def authenticate(username, password):
+        user = UserModel.query.filter_by(username=username, is_active=True).first()
+        if user and check_password_hash(user.password_hash, password):
+            return User._to_dict(user)
+        return None
+    
+    @staticmethod
+    def create(username, password, role='company', company_id=None):
+        new_user = UserModel(
+            id=str(uuid.uuid4()),
+            username=username,
+            password_hash=generate_password_hash(password),
+            role=role,
+            company_id=company_id if company_id else None,
+            created_at=datetime.utcnow(),
+            is_active=True
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        return User._to_dict(new_user)
+    
+    @staticmethod
+    def update(user_id, **kwargs):
+        user = UserModel.query.get(user_id)
+        if user:
+            if 'password' in kwargs and kwargs['password']:
+                user.password_hash = generate_password_hash(kwargs.pop('password'))
+            for key, value in kwargs.items():
+                if hasattr(user, key) and key != 'password_hash':
+                    setattr(user, key, value)
+            db.session.commit()
+            return User._to_dict(user)
+        return None
+    
+    @staticmethod
+    def delete(user_id):
+        user = UserModel.query.get(user_id)
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+    
+    @staticmethod
+    def _to_dict(user):
+        if not user:
+            return None
+        return {
+            'id': user.id,
+            'username': user.username,
+            'role': user.role,
+            'company_id': user.company_id,
+            'is_active': user.is_active,
+            'created_at': user.created_at.isoformat() if user.created_at else ''
+        }
 
 class Company:
     @staticmethod

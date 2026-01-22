@@ -1,13 +1,26 @@
 import os
+import uuid
 from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
+from werkzeug.security import generate_password_hash
 
 class Base(DeclarativeBase):
     pass
 
 db = SQLAlchemy(model_class=Base)
+
+class User(db.Model):
+    __tablename__ = 'users'
+    
+    id = db.Column(db.String(36), primary_key=True)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(20), nullable=False, default='company')
+    company_id = db.Column(db.String(36), db.ForeignKey('companies.id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_active = db.Column(db.Boolean, default=True)
 
 class Company(db.Model):
     __tablename__ = 'companies'
@@ -21,6 +34,7 @@ class Company(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     receipts = db.relationship('Receipt', backref='company', lazy=True)
+    users = db.relationship('User', backref='company', lazy=True)
 
 class Client(db.Model):
     __tablename__ = 'clients'
@@ -61,6 +75,24 @@ def init_database(app):
             default_settings = Settings(thermal_width=58)
             db.session.add(default_settings)
             db.session.commit()
+        
+        existing_admin = User.query.filter_by(username=os.environ.get('ADMIN_USERNAME', 'admin')).first()
+        if not existing_admin:
+            admin_username = os.environ.get('ADMIN_USERNAME', 'admin')
+            admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
+            
+            admin_user = User(
+                id=str(uuid.uuid4()),
+                username=admin_username,
+                password_hash=generate_password_hash(admin_password),
+                role='superadmin',
+                company_id=None,
+                created_at=datetime.utcnow(),
+                is_active=True
+            )
+            db.session.add(admin_user)
+            db.session.commit()
+            print(f"Super admin created: {admin_username}")
         
         print("Database tables created successfully!")
 

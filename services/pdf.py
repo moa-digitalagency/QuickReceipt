@@ -19,41 +19,43 @@ def generate_receipt_pdf(receipt, client, company, settings):
     )
     
     styles = getSampleStyleSheet()
-    title_style = ParagraphStyle('Title', parent=styles['Heading1'], fontSize=24, spaceAfter=20, alignment=1)
-    header_style = ParagraphStyle('Header', parent=styles['Normal'], fontSize=10, textColor=colors.grey)
+    title_style = ParagraphStyle('Title', parent=styles['Heading1'], fontSize=24, spaceAfter=10, alignment=1)
+    header_style = ParagraphStyle('Header', parent=styles['Normal'], fontSize=10, textColor=colors.grey, alignment=1)
+    centered_style = ParagraphStyle('Centered', parent=styles['Normal'], fontSize=12, alignment=1)
     normal_style = ParagraphStyle('Normal', parent=styles['Normal'], fontSize=12, spaceAfter=10)
+    receipt_title_style = ParagraphStyle('ReceiptTitle', fontSize=18, spaceAfter=15, alignment=1)
     
     elements = []
     
     if company and company.get('logo') and os.path.exists(company['logo']):
         try:
+            from reportlab.lib.utils import ImageReader
             img = Image(company['logo'], width=50*mm, height=25*mm)
+            img.hAlign = 'CENTER'
             elements.append(img)
-            elements.append(Spacer(1, 10*mm))
+            elements.append(Spacer(1, 5*mm))
         except:
             pass
     
     if company and company.get('name'):
         elements.append(Paragraph(company['name'], title_style))
     
-    company_info = []
     if company:
         if company.get('address'):
-            company_info.append(company['address'].replace('\n', ' '))
+            address_text = company['address'].replace('\n', '<br/>')
+            elements.append(Paragraph(address_text, header_style))
         if company.get('phone'):
-            company_info.append(f"Tel: {company['phone']}")
+            elements.append(Paragraph(f"Tel: {company['phone']}", header_style))
         if company.get('tax_id'):
-            company_info.append(f"ICE/SIRET: {company['tax_id']}")
+            elements.append(Paragraph(f"ICE/SIRET: {company['tax_id']}", header_style))
     
-    if company_info:
-        elements.append(Paragraph(' | '.join(company_info), header_style))
-        elements.append(Spacer(1, 10*mm))
+    elements.append(Spacer(1, 15*mm))
     
-    elements.append(Paragraph(f"<b>{t('receipts.receipt')}</b>", ParagraphStyle('ReceiptTitle', fontSize=18, spaceAfter=15)))
-    elements.append(Paragraph(f"N: {receipt.get('receipt_number', '')}", normal_style))
+    elements.append(Paragraph(f"<b>{t('receipts.receipt')}</b>", receipt_title_style))
+    elements.append(Paragraph(f"N: {receipt.get('receipt_number', '')}", centered_style))
     
     date_str = receipt.get('created_at', '')[:10] if receipt.get('created_at') else ''
-    elements.append(Paragraph(f"Date: {date_str}", normal_style))
+    elements.append(Paragraph(f"Date: {date_str}", centered_style))
     elements.append(Spacer(1, 10*mm))
     
     if client:
