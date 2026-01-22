@@ -5,7 +5,7 @@
 {% block content %}
 <div class="max-w-2xl mx-auto">
     <div class="mb-6">
-        <a href="{{ url_for('clients_list') }}" class="inline-flex items-center text-gray-600 hover:text-gray-900">
+        <a href="{{ url_for('clients.list_clients') }}" class="inline-flex items-center text-gray-600 hover:text-gray-900">
             <svg class="w-5 h-5 {{ 'ml-1' if is_rtl else 'mr-1' }} {{ 'rotate-180' if is_rtl else '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
@@ -45,7 +45,7 @@
                 <button type="submit" class="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
                     {{ t('common.save') }}
                 </button>
-                <a href="{{ url_for('clients_list') }}" class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors text-center">
+                <a href="{{ url_for('clients.list_clients') }}" class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors text-center">
                     {{ t('common.cancel') }}
                 </a>
             </div>

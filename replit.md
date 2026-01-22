@@ -13,19 +13,47 @@ QuickReceipt is a web application for managing receipts, designed for freelancer
 
 ## Project Structure
 ```
-├── app.py                 # Main Flask application
-├── translations.json      # i18n translations (FR, EN, AR)
-├── templates/            # Jinja2 HTML templates
+├── app.py                 # Main Flask application entry point
+├── docs/                  # Documentation
+│   └── README.md
+├── lang/                  # Language translations
+│   └── translations.json  # i18n translations (FR, EN, AR)
+├── models/                # Data models
+│   ├── __init__.py
+│   ├── base.py           # Base data loading/saving functions
+│   ├── client.py         # Client model
+│   ├── receipt.py        # Receipt model
+│   └── settings.py       # Settings model
+├── routes/                # Flask route handlers
+│   ├── __init__.py       # Route registration
+│   ├── api.py            # API endpoints
+│   ├── clients.py        # Client routes
+│   ├── dashboard.py      # Dashboard routes
+│   ├── receipts.py       # Receipt routes
+│   └── settings.py       # Settings routes
+├── scripts/               # Utility scripts
+│   └── __init__.py
+├── security/              # Security utilities
+│   └── __init__.py       # Secret key generation
+├── services/              # Business logic services
+│   ├── __init__.py
+│   ├── pdf.py            # PDF generation service
+│   └── share.py          # Sharing service
+├── static/uploads/        # Uploaded logos
+├── templates/             # Jinja2 HTML templates
 │   ├── base.html         # Base layout with navigation
-│   ├── dashboard.html    # Dashboard with stats and quick actions
+│   ├── dashboard.html    # Dashboard with stats
 │   ├── clients.html      # Client list
 │   ├── client_form.html  # Add/Edit client form
 │   ├── receipts.html     # Receipt list
 │   ├── receipt_form.html # Create receipt form
-│   ├── receipt_view.html # View receipt details with share options
+│   ├── receipt_view.html # View receipt details
 │   └── settings.html     # Company settings
-├── static/uploads/       # Uploaded logos
-└── data/                 # JSON data storage
+├── utils/                 # Utility functions
+│   ├── __init__.py
+│   ├── files.py          # File handling utilities
+│   └── i18n.py           # Internationalization helpers
+└── data/                  # JSON data storage
     ├── clients.json
     ├── receipts.json
     └── settings.json
@@ -55,3 +83,4 @@ The application runs on port 5000.
 - `/settings` - Company settings
 - `/receipts/pdf/<id>` - Download receipt PDF
 - `/set-locale/<locale>` - Change language (fr, en, ar)
+- `/api/share/<id>` - Get share data for a receipt

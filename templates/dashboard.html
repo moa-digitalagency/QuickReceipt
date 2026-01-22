@@ -56,7 +56,7 @@
     <div class="mb-8">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t('dashboard.quick_actions') }}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <a href="{{ url_for('add_receipt') }}" class="flex items-center p-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
+            <a href="{{ url_for('receipts.add_receipt') }}" class="flex items-center p-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
                 <svg class="w-8 h-8 {{ 'ml-4' if is_rtl else 'mr-4' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
@@ -65,7 +65,7 @@
                     <p class="text-sm text-blue-100">{{ t('receipts.add') }}</p>
                 </div>
             </a>
-            <a href="{{ url_for('add_client') }}" class="flex items-center p-4 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors">
+            <a href="{{ url_for('clients.add_client') }}" class="flex items-center p-4 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors">
                 <svg class="w-8 h-8 {{ 'ml-4' if is_rtl else 'mr-4' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
                 </svg>
@@ -80,12 +80,12 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-100">
         <div class="flex items-center justify-between p-6 border-b border-gray-100">
             <h2 class="text-lg font-semibold text-gray-900">{{ t('dashboard.recent_receipts') }}</h2>
-            <a href="{{ url_for('receipts_list') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">{{ t('dashboard.view_all') }}</a>
+            <a href="{{ url_for('receipts.list_receipts') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium">{{ t('dashboard.view_all') }}</a>
         </div>
         <div class="divide-y divide-gray-100">
             {% if receipts %}
                 {% for receipt in receipts %}
-                <a href="{{ url_for('view_receipt', receipt_id=receipt.id) }}" class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                <a href="{{ url_for('receipts.view_receipt', receipt_id=receipt.id) }}" class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center {{ 'ml-4' if is_rtl else 'mr-4' }}">
                             <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="max-w-3xl mx-auto">
     <div class="mb-6">
-        <a href="{{ url_for('receipts_list') }}" class="inline-flex items-center text-gray-600 hover:text-gray-900">
+        <a href="{{ url_for('receipts.list_receipts') }}" class="inline-flex items-center text-gray-600 hover:text-gray-900">
             <svg class="w-5 h-5 {{ 'ml-1' if is_rtl else 'mr-1' }} {{ 'rotate-180' if is_rtl else '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
@@ -88,7 +88,7 @@
             </div>
 
             <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200">
-                <a href="{{ url_for('download_pdf', receipt_id=receipt.id) }}" class="flex-1 inline-flex items-center justify-center px-4 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors">
+                <a href="{{ url_for('receipts.download_pdf', receipt_id=receipt.id) }}" class="flex-1 inline-flex items-center justify-center px-4 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors">
                     <svg class="w-5 h-5 {{ 'ml-2' if is_rtl else 'mr-2' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
