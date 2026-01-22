@@ -63,7 +63,10 @@ QuickReceipt is a web application for managing receipts, designed for freelancer
 ## Features
 - **User Authentication**: Login/logout with role-based access control
   - Super Admin: Full access including user management
-  - Company: Standard access for receipt management
+  - User: Standard access for receipt management
+- **Complete Data Isolation**: Each user manages their own companies, clients, and receipts independently
+  - user_id foreign key on companies, clients, receipts, and settings tables
+  - All queries filtered by logged-in user's ID
 - Dashboard with quick receipt creation and recent receipts overview
 - Client management (CRUD) with name, WhatsApp, and email
 - **Multi-company support**: Configure multiple companies in settings, select one per receipt
@@ -109,7 +112,11 @@ The application runs on port 5000.
 - `/api/share/<id>` - Get share data for WhatsApp/Email
 
 ## Recent Changes
-- Added user authentication system with roles (superadmin, company)
+- Implemented complete data isolation: each user has separate companies, clients, receipts
+- Renamed "company" role to "user" for clarity
+- Added user_id foreign key to companies, clients, receipts, and settings tables
+- All routes filter data by logged-in user's ID for security
+- Added user authentication system with roles (superadmin, user)
 - Added user management for super admin
 - Default superadmin account created via .env variables
 - Centered company information on PDF A4 receipts
