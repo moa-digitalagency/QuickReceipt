@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 
-from models import Client, Receipt, Settings
+from models import Client, Receipt, Company
 from services.share import get_share_message
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
@@ -12,9 +12,9 @@ def share_data(receipt_id):
         return jsonify({'error': 'Receipt not found'}), 404
     
     client = Client.get_by_id(receipt.get('client_id'))
-    settings = Settings.get()
+    company = Company.get_by_id(receipt.get('company_id'))
     
-    return jsonify(get_share_message(receipt, client, settings))
+    return jsonify(get_share_message(receipt, client, company))
 
 @api_bp.route('/clients/quick-add', methods=['POST'])
 def quick_add_client():

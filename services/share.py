@@ -1,7 +1,7 @@
 from utils.i18n import t
 
-def get_share_message(receipt, client, settings):
-    company_name = settings.get('company_name', 'QuickReceipt')
+def get_share_message(receipt, client, company):
+    company_name = company.get('name', 'QuickReceipt') if company else 'QuickReceipt'
     client_name = client.get('name', '') if client else ''
     amount = receipt.get('amount', '0')
     receipt_number = receipt.get('receipt_number', '')
@@ -12,6 +12,9 @@ def get_share_message(receipt, client, settings):
         receipt_number=receipt_number,
         amount=amount
     )
+    
+    if company and company.get('tax_id'):
+        message += f"\n\nICE/SIRET: {company['tax_id']}"
     
     return {
         'message': message,

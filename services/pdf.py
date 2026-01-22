@@ -7,7 +7,7 @@ from reportlab.lib.units import mm
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from utils.i18n import t
 
-def generate_receipt_pdf(receipt, client, settings):
+def generate_receipt_pdf(receipt, client, company, settings):
     buffer = BytesIO()
     doc = SimpleDocTemplate(
         buffer, 
@@ -25,31 +25,32 @@ def generate_receipt_pdf(receipt, client, settings):
     
     elements = []
     
-    if settings.get('logo') and os.path.exists(settings['logo']):
+    if company and company.get('logo') and os.path.exists(company['logo']):
         try:
-            img = Image(settings['logo'], width=50*mm, height=25*mm)
+            img = Image(company['logo'], width=50*mm, height=25*mm)
             elements.append(img)
             elements.append(Spacer(1, 10*mm))
         except:
             pass
     
-    if settings.get('company_name'):
-        elements.append(Paragraph(settings['company_name'], title_style))
+    if company and company.get('name'):
+        elements.append(Paragraph(company['name'], title_style))
     
     company_info = []
-    if settings.get('address'):
-        company_info.append(settings['address'])
-    if settings.get('phone'):
-        company_info.append(f"Tel: {settings['phone']}")
-    if settings.get('tax_id'):
-        company_info.append(f"ICE/SIRET: {settings['tax_id']}")
+    if company:
+        if company.get('address'):
+            company_info.append(company['address'].replace('\n', ' '))
+        if company.get('phone'):
+            company_info.append(f"Tel: {company['phone']}")
+        if company.get('tax_id'):
+            company_info.append(f"ICE/SIRET: {company['tax_id']}")
     
     if company_info:
         elements.append(Paragraph(' | '.join(company_info), header_style))
         elements.append(Spacer(1, 10*mm))
     
     elements.append(Paragraph(f"<b>{t('receipts.receipt')}</b>", ParagraphStyle('ReceiptTitle', fontSize=18, spaceAfter=15)))
-    elements.append(Paragraph(f"N°: {receipt.get('receipt_number', '')}", normal_style))
+    elements.append(Paragraph(f"N: {receipt.get('receipt_number', '')}", normal_style))
     
     date_str = receipt.get('created_at', '')[:10] if receipt.get('created_at') else ''
     elements.append(Paragraph(f"Date: {date_str}", normal_style))

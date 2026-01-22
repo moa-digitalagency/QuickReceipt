@@ -69,17 +69,24 @@
       "close": "Fermer"
     },
     "settings": {
-      "title": "Paramètres de l'entreprise",
+      "title": "Paramètres",
       "company_name": "Nom de l'entreprise",
       "logo": "Logo",
       "logo_upload": "Télécharger un logo",
       "address": "Adresse",
-      "tax_id": "Numéro d'identification fiscale (ICE/SIRET)",
+      "tax_id": "ICE/SIRET (optionnel)",
       "phone": "Téléphone",
       "save": "Enregistrer",
       "saved": "Paramètres enregistrés avec succès",
       "thermal_width": "Largeur papier thermique (mm)",
-      "thermal_width_help": "Largeur du papier pour les tickets thermiques (58mm ou 80mm)"
+      "thermal_width_help": "Largeur du papier pour les tickets thermiques (58mm ou 80mm)",
+      "companies": "Entreprises",
+      "add_company": "Ajouter une entreprise",
+      "edit_company": "Modifier l'entreprise",
+      "no_companies": "Aucune entreprise configurée",
+      "delete_company_confirm": "Êtes-vous sûr de vouloir supprimer cette entreprise ?",
+      "select_company": "Sélectionner une entreprise",
+      "or_add_new_company": "ou ajouter une nouvelle entreprise"
     },
     "common": {
       "save": "Enregistrer",
@@ -163,17 +170,24 @@
       "close": "Close"
     },
     "settings": {
-      "title": "Company Settings",
+      "title": "Settings",
       "company_name": "Company Name",
       "logo": "Logo",
       "logo_upload": "Upload Logo",
       "address": "Address",
-      "tax_id": "Tax ID (ICE/SIRET)",
+      "tax_id": "Tax ID - ICE/SIRET (optional)",
       "phone": "Phone",
       "save": "Save",
       "saved": "Settings saved successfully",
       "thermal_width": "Thermal paper width (mm)",
-      "thermal_width_help": "Paper width for thermal receipts (58mm or 80mm)"
+      "thermal_width_help": "Paper width for thermal receipts (58mm or 80mm)",
+      "companies": "Companies",
+      "add_company": "Add Company",
+      "edit_company": "Edit Company",
+      "no_companies": "No companies configured",
+      "delete_company_confirm": "Are you sure you want to delete this company?",
+      "select_company": "Select a company",
+      "or_add_new_company": "or add a new company"
     },
     "common": {
       "save": "Save",
@@ -257,17 +271,24 @@
       "close": "إغلاق"
     },
     "settings": {
-      "title": "إعدادات الشركة",
+      "title": "الإعدادات",
       "company_name": "اسم الشركة",
       "logo": "الشعار",
       "logo_upload": "رفع الشعار",
       "address": "العنوان",
-      "tax_id": "الرقم الضريبي (ICE/SIRET)",
+      "tax_id": "ICE/SIRET (اختياري)",
       "phone": "الهاتف",
       "save": "حفظ",
       "saved": "تم حفظ الإعدادات بنجاح",
       "thermal_width": "عرض الورق الحراري (مم)",
-      "thermal_width_help": "عرض الورق للإيصالات الحرارية (58 أو 80 مم)"
+      "thermal_width_help": "عرض الورق للإيصالات الحرارية (58 أو 80 مم)",
+      "companies": "الشركات",
+      "add_company": "إضافة شركة",
+      "edit_company": "تعديل الشركة",
+      "no_companies": "لا توجد شركات مسجلة",
+      "delete_company_confirm": "هل أنت متأكد من حذف هذه الشركة؟",
+      "select_company": "اختر شركة",
+      "or_add_new_company": "أو أضف شركة جديدة"
     },
     "common": {
       "save": "حفظ",

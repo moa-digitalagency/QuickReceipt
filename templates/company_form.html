@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}{% if company %}{{ t('settings.edit_company') }}{% else %}{{ t('settings.add_company') }}{% endif %} - {{ t('app.name') }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="mb-6">
+        <a href="{{ url_for('settings.settings_page') }}" class="inline-flex items-center text-gray-600 hover:text-gray-900">
+            <svg class="w-5 h-5 {{ 'ml-1' if is_rtl else 'mr-1' }} {{ 'rotate-180' if is_rtl else '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            {{ t('common.back') }}
+        </a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">{% if company %}{{ t('settings.edit_company') }}{% else %}{{ t('settings.add_company') }}{% endif %}</h1>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.company_name') }} *</label>
+                <input type="text" name="name" id="name" required
+                       value="{{ company.name if company else '' }}"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                       placeholder="{{ t('settings.company_name') }}">
+            </div>
+
+            <div>
+                <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.logo') }}</label>
+                {% if company and company.logo %}
+                <div class="mb-3">
+                    <img src="/{{ company.logo }}" alt="Current Logo" class="h-16 border border-gray-200 rounded-lg p-2">
+                </div>
+                {% endif %}
+                <input type="file" name="logo" id="logo" accept="image/*"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                <p class="mt-1 text-sm text-gray-500">{{ t('settings.logo_upload') }}</p>
+            </div>
+
+            <div>
+                <label for="address" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.address') }}</label>
+                <textarea name="address" id="address" rows="3"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                          placeholder="{{ t('settings.address') }}">{{ company.address if company else '' }}</textarea>
+            </div>
+
+            <div>
+                <label for="tax_id" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.tax_id') }}</label>
+                <input type="text" name="tax_id" id="tax_id"
+                       value="{{ company.tax_id if company else '' }}"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                       placeholder="ICE/SIRET">
+            </div>
+
+            <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.phone') }}</label>
+                <input type="tel" name="phone" id="phone"
+                       value="{{ company.phone if company else '' }}"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                       placeholder="+212 5XX XXX XXX">
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                <button type="submit" class="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                    {{ t('common.save') }}
+                </button>
+                <a href="{{ url_for('settings.settings_page') }}" class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors text-center">
+                    {{ t('common.cancel') }}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

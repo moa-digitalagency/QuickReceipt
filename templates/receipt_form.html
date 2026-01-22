@@ -24,6 +24,57 @@
 
         <form method="POST" class="space-y-6">
             <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.companies') }} *</label>
+                
+                <div class="space-y-3">
+                    <select name="company_id" id="company_id"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                            onchange="toggleNewCompanyForm()">
+                        <option value="">{{ t('settings.select_company') }}</option>
+                        {% for company in companies %}
+                        <option value="{{ company.id }}" {% if receipt and receipt.company_id == company.id %}selected{% endif %}>
+                            {{ company.name }}
+                        </option>
+                        {% endfor %}
+                        <option value="new">{{ t('settings.or_add_new_company') }}</option>
+                    </select>
+                    
+                    <div id="new-company-form" class="hidden bg-green-50 p-4 rounded-lg border border-green-200 space-y-3">
+                        <h3 class="font-medium text-green-900">{{ t('settings.add_company') }}</h3>
+                        
+                        <div>
+                            <label for="new_company_name" class="block text-sm font-medium text-gray-700 mb-1">{{ t('settings.company_name') }} *</label>
+                            <input type="text" name="new_company_name" id="new_company_name"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                   placeholder="{{ t('settings.company_name') }}">
+                        </div>
+                        
+                        <div>
+                            <label for="new_company_address" class="block text-sm font-medium text-gray-700 mb-1">{{ t('settings.address') }}</label>
+                            <input type="text" name="new_company_address" id="new_company_address"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                   placeholder="{{ t('settings.address') }}">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label for="new_company_tax_id" class="block text-sm font-medium text-gray-700 mb-1">{{ t('settings.tax_id') }}</label>
+                                <input type="text" name="new_company_tax_id" id="new_company_tax_id"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                       placeholder="ICE/SIRET">
+                            </div>
+                            <div>
+                                <label for="new_company_phone" class="block text-sm font-medium text-gray-700 mb-1">{{ t('settings.phone') }}</label>
+                                <input type="tel" name="new_company_phone" id="new_company_phone"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                       placeholder="+212 5XX XXX XXX">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('clients.client') }} *</label>
                 
                 <div class="space-y-3">
@@ -123,6 +174,24 @@ function toggleNewClientForm() {
         newClientName.value = '';
         document.getElementById('new_client_whatsapp').value = '';
         document.getElementById('new_client_email').value = '';
+    }
+}
+
+function toggleNewCompanyForm() {
+    const select = document.getElementById('company_id');
+    const newCompanyForm = document.getElementById('new-company-form');
+    const newCompanyName = document.getElementById('new_company_name');
+    
+    if (select.value === 'new') {
+        newCompanyForm.classList.remove('hidden');
+        newCompanyName.required = true;
+    } else {
+        newCompanyForm.classList.add('hidden');
+        newCompanyName.required = false;
+        newCompanyName.value = '';
+        document.getElementById('new_company_address').value = '';
+        document.getElementById('new_company_tax_id').value = '';
+        document.getElementById('new_company_phone').value = '';
     }
 }
 </script>

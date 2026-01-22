@@ -2,7 +2,7 @@ import os
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
-def generate_thermal_receipt(receipt, client, settings):
+def generate_thermal_receipt(receipt, client, company, settings):
     thermal_width_mm = int(settings.get('thermal_width', 58))
     
     dpi = 203
@@ -12,7 +12,7 @@ def generate_thermal_receipt(receipt, client, settings):
     line_height = 24
     small_line_height = 20
     
-    lines_needed = 20
+    lines_needed = 25
     height_px = lines_needed * line_height + 100
     
     img = Image.new('RGB', (width_px, height_px), 'white')
@@ -29,7 +29,7 @@ def generate_thermal_receipt(receipt, client, settings):
     
     y = margin
     
-    company_name = settings.get('company_name', 'QuickReceipt')
+    company_name = company.get('name', '') if company else 'QuickReceipt'
     if company_name:
         text_bbox = draw.textbbox((0, 0), company_name, font=font_bold)
         text_width = text_bbox[2] - text_bbox[0]
@@ -37,8 +37,8 @@ def generate_thermal_receipt(receipt, client, settings):
         draw.text((x, y), company_name, fill='black', font=font_bold)
         y += line_height
     
-    if settings.get('address'):
-        address_lines = settings['address'].split('\n')
+    if company and company.get('address'):
+        address_lines = company['address'].split('\n')
         for addr_line in address_lines:
             if addr_line.strip():
                 text_bbox = draw.textbbox((0, 0), addr_line.strip(), font=font_small)
@@ -47,12 +47,20 @@ def generate_thermal_receipt(receipt, client, settings):
                 draw.text((x, y), addr_line.strip(), fill='black', font=font_small)
                 y += small_line_height
     
-    if settings.get('phone'):
-        phone_text = f"Tel: {settings['phone']}"
+    if company and company.get('phone'):
+        phone_text = f"Tel: {company['phone']}"
         text_bbox = draw.textbbox((0, 0), phone_text, font=font_small)
         text_width = text_bbox[2] - text_bbox[0]
         x = (width_px - text_width) // 2
         draw.text((x, y), phone_text, fill='black', font=font_small)
+        y += small_line_height
+    
+    if company and company.get('tax_id'):
+        tax_text = f"ICE/SIRET: {company['tax_id']}"
+        text_bbox = draw.textbbox((0, 0), tax_text, font=font_small)
+        text_width = text_bbox[2] - text_bbox[0]
+        x = (width_px - text_width) // 2
+        draw.text((x, y), tax_text, fill='black', font=font_small)
         y += small_line_height
     
     y += 5

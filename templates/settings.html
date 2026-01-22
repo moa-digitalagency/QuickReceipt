@@ -3,73 +3,88 @@
 {% block title %}{{ t('settings.title') }} - {{ t('app.name') }}{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto">
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ t('settings.title') }}</h1>
+<div class="max-w-4xl mx-auto space-y-6">
+    <h1 class="text-2xl font-bold text-gray-900">{{ t('settings.title') }}</h1>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <form method="POST" enctype="multipart/form-data" class="space-y-6">
-            <div>
-                <label for="company_name" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.company_name') }}</label>
-                <input type="text" name="company_name" id="company_name"
-                       value="{{ settings.company_name }}"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                       placeholder="{{ t('settings.company_name') }}">
-            </div>
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900">{{ t('settings.companies') }}</h2>
+            <a href="{{ url_for('settings.add_company') }}" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                {{ t('settings.add_company') }}
+            </a>
+        </div>
 
-            <div>
-                <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.logo') }}</label>
-                {% if settings.logo %}
-                <div class="mb-3">
-                    <img src="/{{ settings.logo }}" alt="Current Logo" class="h-16 border border-gray-200 rounded-lg p-2">
+        {% if companies %}
+        <div class="space-y-3">
+            {% for company in companies %}
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div class="flex items-center gap-4">
+                    {% if company.logo %}
+                    <img src="/{{ company.logo }}" alt="{{ company.name }}" class="h-12 w-12 object-contain rounded border border-gray-200 bg-white p-1">
+                    {% else %}
+                    <div class="h-12 w-12 bg-blue-100 rounded flex items-center justify-center">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <h3 class="font-medium text-gray-900">{{ company.name }}</h3>
+                        <p class="text-sm text-gray-500">
+                            {% if company.phone %}{{ company.phone }}{% endif %}
+                            {% if company.tax_id %} | {{ company.tax_id }}{% endif %}
+                        </p>
+                    </div>
                 </div>
-                {% endif %}
-                <input type="file" name="logo" id="logo" accept="image/*"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                <p class="mt-1 text-sm text-gray-500">{{ t('settings.logo_upload') }}</p>
-            </div>
-
-            <div>
-                <label for="address" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.address') }}</label>
-                <textarea name="address" id="address" rows="3"
-                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                          placeholder="{{ t('settings.address') }}">{{ settings.address }}</textarea>
-            </div>
-
-            <div>
-                <label for="tax_id" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.tax_id') }}</label>
-                <input type="text" name="tax_id" id="tax_id"
-                       value="{{ settings.tax_id }}"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                       placeholder="ICE/SIRET">
-            </div>
-
-            <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.phone') }}</label>
-                <input type="tel" name="phone" id="phone"
-                       value="{{ settings.phone }}"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                       placeholder="+212 5XX XXX XXX">
-            </div>
-
-            <div class="border-t border-gray-200 pt-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">{{ t('receipts.download_thermal') }}</h3>
-                
-                <div>
-                    <label for="thermal_width" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.thermal_width') }}</label>
-                    <select name="thermal_width" id="thermal_width"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                        <option value="58" {% if settings.thermal_width == 58 %}selected{% endif %}>58 mm</option>
-                        <option value="80" {% if settings.thermal_width == 80 %}selected{% endif %}>80 mm</option>
-                    </select>
-                    <p class="mt-1 text-sm text-gray-500">{{ t('settings.thermal_width_help') }}</p>
+                <div class="flex items-center gap-2">
+                    <a href="{{ url_for('settings.edit_company', company_id=company.id) }}" 
+                       class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                    </a>
+                    <form method="POST" action="{{ url_for('settings.delete_company', company_id=company.id) }}" 
+                          onsubmit="return confirm('{{ t('settings.delete_company_confirm') }}');">
+                        <button type="submit" class="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </form>
                 </div>
             </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-8 text-gray-500">
+            <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+            <p>{{ t('settings.no_companies') }}</p>
+            <a href="{{ url_for('settings.add_company') }}" class="inline-block mt-3 text-blue-600 hover:text-blue-700">
+                {{ t('settings.add_company') }}
+            </a>
+        </div>
+        {% endif %}
+    </div>
 
-            <div class="pt-4">
-                <button type="submit" class="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                    {{ t('settings.save') }}
-                </button>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ t('receipts.download_thermal') }}</h2>
+        
+        <form method="POST">
+            <div class="mb-4">
+                <label for="thermal_width" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.thermal_width') }}</label>
+                <select name="thermal_width" id="thermal_width"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                    <option value="58" {% if settings.thermal_width == 58 %}selected{% endif %}>58 mm</option>
+                    <option value="80" {% if settings.thermal_width == 80 %}selected{% endif %}>80 mm</option>
+                </select>
+                <p class="mt-1 text-sm text-gray-500">{{ t('settings.thermal_width_help') }}</p>
             </div>
+
+            <button type="submit" class="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                {{ t('settings.save') }}
+            </button>
         </form>
     </div>
 </div>

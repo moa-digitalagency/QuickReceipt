@@ -23,7 +23,7 @@ class Receipt:
         return sorted_receipts
     
     @staticmethod
-    def create(client_id, description, amount, payment_method):
+    def create(client_id, description, amount, payment_method, company_id=''):
         receipts = load_data(RECEIPTS_FILE)
         receipt_number = f"REC-{datetime.now().strftime('%Y%m%d')}-{len(receipts) + 1:04d}"
         
@@ -31,6 +31,7 @@ class Receipt:
             'id': str(uuid.uuid4()),
             'receipt_number': receipt_number,
             'client_id': client_id,
+            'company_id': company_id,
             'description': description,
             'amount': amount,
             'payment_method': payment_method,
