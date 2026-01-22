@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 
 from models import Client, Receipt, Settings
 from services.share import get_share_message
@@ -15,3 +15,18 @@ def share_data(receipt_id):
     settings = Settings.get()
     
     return jsonify(get_share_message(receipt, client, settings))
+
+@api_bp.route('/clients/quick-add', methods=['POST'])
+def quick_add_client():
+    data = request.get_json()
+    
+    if not data or not data.get('name'):
+        return jsonify({'error': 'Name is required'}), 400
+    
+    new_client = Client.create(
+        name=data.get('name', ''),
+        whatsapp=data.get('whatsapp', ''),
+        email=data.get('email', '')
+    )
+    
+    return jsonify(new_client)

@@ -14,6 +14,8 @@ def settings_page():
         settings['address'] = request.form.get('address', '')
         settings['tax_id'] = request.form.get('tax_id', '')
         settings['phone'] = request.form.get('phone', '')
+        thermal_width = int(request.form.get('thermal_width', 58))
+        settings['thermal_width'] = thermal_width if thermal_width in [58, 80] else 58
         
         if 'logo' in request.files:
             logo_path = save_logo(request.files['logo'])

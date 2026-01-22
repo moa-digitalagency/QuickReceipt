@@ -9,13 +9,17 @@ class Settings:
     def get():
         if os.path.exists(SETTINGS_FILE):
             with open(SETTINGS_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                settings = json.load(f)
+                if 'thermal_width' not in settings:
+                    settings['thermal_width'] = 58
+                return settings
         return {
             'company_name': '',
             'logo': '',
             'address': '',
             'tax_id': '',
-            'phone': ''
+            'phone': '',
+            'thermal_width': 58
         }
     
     @staticmethod
