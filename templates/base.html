@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="{{ locale }}" dir="{{ 'rtl' if is_rtl else 'ltr' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ t('app.name') }}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: {% if is_rtl %}'Noto Sans Arabic'{% else %}'Inter'{% endif %}, sans-serif;
+        }
+        .sidebar-link {
+            transition: all 0.2s ease;
+        }
+        .sidebar-link:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        .sidebar-link.active {
+            background-color: rgba(59, 130, 246, 0.15);
+            border-{{ 'right' if is_rtl else 'left' }}: 3px solid #3B82F6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex min-h-screen">
+        <aside class="hidden md:flex md:flex-shrink-0">
+            <div class="flex flex-col w-64 bg-white border-{{ 'l' if is_rtl else 'r' }} border-gray-200">
+                <div class="flex items-center justify-center h-16 px-4 bg-blue-600">
+                    <h1 class="text-xl font-bold text-white">{{ t('app.name') }}</h1>
+                </div>
+                <nav class="flex-1 px-2 py-4 space-y-1">
+                    <a href="{{ url_for('dashboard') }}" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                        <svg class="w-5 h-5 {{ 'ml-3' if is_rtl else 'mr-3' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        {{ t('nav.dashboard') }}
+                    </a>
+                    <a href="{{ url_for('clients_list') }}" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg {% if 'client' in request.endpoint %}active{% endif %}">
+                        <svg class="w-5 h-5 {{ 'ml-3' if is_rtl else 'mr-3' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        {{ t('nav.clients') }}
+                    </a>
+                    <a href="{{ url_for('receipts_list') }}" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg {% if 'receipt' in request.endpoint %}active{% endif %}">
+                        <svg class="w-5 h-5 {{ 'ml-3' if is_rtl else 'mr-3' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        {{ t('nav.receipts') }}
+                    </a>
+                    <a href="{{ url_for('settings_page') }}" class="sidebar-link flex items-center px-4 py-3 text-gray-700 rounded-lg {% if request.endpoint == 'settings_page' %}active{% endif %}">
+                        <svg class="w-5 h-5 {{ 'ml-3' if is_rtl else 'mr-3' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        {{ t('nav.settings') }}
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <div class="flex flex-col flex-1">
+            <header class="bg-white shadow-sm border-b border-gray-200">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-500">{{ t('app.tagline') }}</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <a href="{{ url_for('set_locale', locale='fr') }}" class="px-2 py-1 text-sm rounded {% if locale == 'fr' %}bg-blue-100 text-blue-700{% else %}text-gray-600 hover:bg-gray-100{% endif %}">FR</a>
+                        <a href="{{ url_for('set_locale', locale='en') }}" class="px-2 py-1 text-sm rounded {% if locale == 'en' %}bg-blue-100 text-blue-700{% else %}text-gray-600 hover:bg-gray-100{% endif %}">EN</a>
+                        <a href="{{ url_for('set_locale', locale='ar') }}" class="px-2 py-1 text-sm rounded {% if locale == 'ar' %}bg-blue-100 text-blue-700{% else %}text-gray-600 hover:bg-gray-100{% endif %}">AR</a>
+                    </div>
+                </div>
+            </header>
+
+            <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-200">
+                <nav class="px-4 py-2 space-y-1">
+                    <a href="{{ url_for('dashboard') }}" class="block px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">{{ t('nav.dashboard') }}</a>
+                    <a href="{{ url_for('clients_list') }}" class="block px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">{{ t('nav.clients') }}</a>
+                    <a href="{{ url_for('receipts_list') }}" class="block px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">{{ t('nav.receipts') }}</a>
+                    <a href="{{ url_for('settings_page') }}" class="block px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">{{ t('nav.settings') }}</a>
+                </nav>
+            </div>
+
+            <main class="flex-1 p-4 md:p-6 overflow-auto">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

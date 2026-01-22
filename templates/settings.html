@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('settings.title') }} - {{ t('app.name') }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ t('settings.title') }}</h1>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            <div>
+                <label for="company_name" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.company_name') }}</label>
+                <input type="text" name="company_name" id="company_name"
+                       value="{{ settings.company_name }}"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                       placeholder="{{ t('settings.company_name') }}">
+            </div>
+
+            <div>
+                <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.logo') }}</label>
+                {% if settings.logo %}
+                <div class="mb-3">
+                    <img src="/{{ settings.logo }}" alt="Current Logo" class="h-16 border border-gray-200 rounded-lg p-2">
+                </div>
+                {% endif %}
+                <input type="file" name="logo" id="logo" accept="image/*"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                <p class="mt-1 text-sm text-gray-500">{{ t('settings.logo_upload') }}</p>
+            </div>
+
+            <div>
+                <label for="address" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.address') }}</label>
+                <textarea name="address" id="address" rows="3"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                          placeholder="{{ t('settings.address') }}">{{ settings.address }}</textarea>
+            </div>
+
+            <div>
+                <label for="tax_id" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.tax_id') }}</label>
+                <input type="text" name="tax_id" id="tax_id"
+                       value="{{ settings.tax_id }}"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                       placeholder="ICE/SIRET">
+            </div>
+
+            <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.phone') }}</label>
+                <input type="tel" name="phone" id="phone"
+                       value="{{ settings.phone }}"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                       placeholder="+212 5XX XXX XXX">
+            </div>
+
+            <div class="pt-4">
+                <button type="submit" class="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                    {{ t('settings.save') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

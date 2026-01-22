@@ -1,0 +1,260 @@
+{
+  "fr": {
+    "app": {
+      "name": "QuickReceipt",
+      "tagline": "Gestion simplifiée de vos reçus"
+    },
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "clients": "Clients",
+      "receipts": "Reçus",
+      "settings": "Paramètres"
+    },
+    "dashboard": {
+      "title": "Tableau de bord",
+      "welcome": "Bienvenue sur QuickReceipt",
+      "quick_actions": "Actions rapides",
+      "new_receipt": "Nouveau reçu",
+      "new_client": "Nouveau client",
+      "recent_receipts": "Reçus récents",
+      "no_receipts": "Aucun reçu pour le moment",
+      "view_all": "Voir tout",
+      "total_receipts": "Total reçus",
+      "total_clients": "Total clients",
+      "total_amount": "Montant total"
+    },
+    "clients": {
+      "title": "Gestion des clients",
+      "add": "Ajouter un client",
+      "edit": "Modifier le client",
+      "name": "Nom",
+      "whatsapp": "Numéro WhatsApp",
+      "email": "Adresse e-mail",
+      "client": "Client",
+      "no_clients": "Aucun client enregistré",
+      "delete_confirm": "Êtes-vous sûr de vouloir supprimer ce client ?",
+      "actions": "Actions"
+    },
+    "receipts": {
+      "title": "Gestion des reçus",
+      "add": "Créer un reçu",
+      "edit": "Modifier le reçu",
+      "receipt": "Reçu",
+      "receipt_number": "Numéro de reçu",
+      "select_client": "Sélectionner un client",
+      "description": "Description des services",
+      "amount": "Montant (MAD)",
+      "payment_method": "Moyen de paiement",
+      "payment_methods": {
+        "cash": "Espèces",
+        "card": "Carte bancaire",
+        "transfer": "Virement",
+        "check": "Chèque"
+      },
+      "date": "Date",
+      "no_receipts": "Aucun reçu enregistré",
+      "delete_confirm": "Êtes-vous sûr de vouloir supprimer ce reçu ?",
+      "actions": "Actions",
+      "download_pdf": "Télécharger PDF",
+      "share_whatsapp": "Partager via WhatsApp",
+      "share_email": "Partager par e-mail",
+      "view": "Voir",
+      "thank_you": "Merci pour votre confiance !",
+      "share_message": "Bonjour {client_name},\n\nVeuillez trouver ci-joint votre reçu n°{receipt_number} de {company_name} pour un montant de {amount} MAD.\n\nCordialement."
+    },
+    "settings": {
+      "title": "Paramètres de l'entreprise",
+      "company_name": "Nom de l'entreprise",
+      "logo": "Logo",
+      "logo_upload": "Télécharger un logo",
+      "address": "Adresse",
+      "tax_id": "Numéro d'identification fiscale (ICE/SIRET)",
+      "phone": "Téléphone",
+      "save": "Enregistrer",
+      "saved": "Paramètres enregistrés avec succès"
+    },
+    "common": {
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "edit": "Modifier",
+      "back": "Retour",
+      "search": "Rechercher",
+      "loading": "Chargement...",
+      "success": "Succès",
+      "error": "Erreur"
+    }
+  },
+  "en": {
+    "app": {
+      "name": "QuickReceipt",
+      "tagline": "Simplified receipt management"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "clients": "Clients",
+      "receipts": "Receipts",
+      "settings": "Settings"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "welcome": "Welcome to QuickReceipt",
+      "quick_actions": "Quick Actions",
+      "new_receipt": "New Receipt",
+      "new_client": "New Client",
+      "recent_receipts": "Recent Receipts",
+      "no_receipts": "No receipts yet",
+      "view_all": "View All",
+      "total_receipts": "Total Receipts",
+      "total_clients": "Total Clients",
+      "total_amount": "Total Amount"
+    },
+    "clients": {
+      "title": "Client Management",
+      "add": "Add Client",
+      "edit": "Edit Client",
+      "name": "Name",
+      "whatsapp": "WhatsApp Number",
+      "email": "Email Address",
+      "client": "Client",
+      "no_clients": "No clients registered",
+      "delete_confirm": "Are you sure you want to delete this client?",
+      "actions": "Actions"
+    },
+    "receipts": {
+      "title": "Receipt Management",
+      "add": "Create Receipt",
+      "edit": "Edit Receipt",
+      "receipt": "Receipt",
+      "receipt_number": "Receipt Number",
+      "select_client": "Select a client",
+      "description": "Service Description",
+      "amount": "Amount (MAD)",
+      "payment_method": "Payment Method",
+      "payment_methods": {
+        "cash": "Cash",
+        "card": "Credit Card",
+        "transfer": "Bank Transfer",
+        "check": "Check"
+      },
+      "date": "Date",
+      "no_receipts": "No receipts registered",
+      "delete_confirm": "Are you sure you want to delete this receipt?",
+      "actions": "Actions",
+      "download_pdf": "Download PDF",
+      "share_whatsapp": "Share via WhatsApp",
+      "share_email": "Share by Email",
+      "view": "View",
+      "thank_you": "Thank you for your trust!",
+      "share_message": "Hello {client_name},\n\nPlease find attached your receipt #{receipt_number} from {company_name} for the amount of {amount} MAD.\n\nBest regards."
+    },
+    "settings": {
+      "title": "Company Settings",
+      "company_name": "Company Name",
+      "logo": "Logo",
+      "logo_upload": "Upload Logo",
+      "address": "Address",
+      "tax_id": "Tax ID (ICE/SIRET)",
+      "phone": "Phone",
+      "save": "Save",
+      "saved": "Settings saved successfully"
+    },
+    "common": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "back": "Back",
+      "search": "Search",
+      "loading": "Loading...",
+      "success": "Success",
+      "error": "Error"
+    }
+  },
+  "ar": {
+    "app": {
+      "name": "QuickReceipt",
+      "tagline": "إدارة مبسطة للإيصالات"
+    },
+    "nav": {
+      "dashboard": "لوحة التحكم",
+      "clients": "العملاء",
+      "receipts": "الإيصالات",
+      "settings": "الإعدادات"
+    },
+    "dashboard": {
+      "title": "لوحة التحكم",
+      "welcome": "مرحباً بك في QuickReceipt",
+      "quick_actions": "إجراءات سريعة",
+      "new_receipt": "إيصال جديد",
+      "new_client": "عميل جديد",
+      "recent_receipts": "الإيصالات الأخيرة",
+      "no_receipts": "لا توجد إيصالات حتى الآن",
+      "view_all": "عرض الكل",
+      "total_receipts": "إجمالي الإيصالات",
+      "total_clients": "إجمالي العملاء",
+      "total_amount": "المبلغ الإجمالي"
+    },
+    "clients": {
+      "title": "إدارة العملاء",
+      "add": "إضافة عميل",
+      "edit": "تعديل العميل",
+      "name": "الاسم",
+      "whatsapp": "رقم واتساب",
+      "email": "البريد الإلكتروني",
+      "client": "العميل",
+      "no_clients": "لا يوجد عملاء مسجلين",
+      "delete_confirm": "هل أنت متأكد من حذف هذا العميل؟",
+      "actions": "الإجراءات"
+    },
+    "receipts": {
+      "title": "إدارة الإيصالات",
+      "add": "إنشاء إيصال",
+      "edit": "تعديل الإيصال",
+      "receipt": "إيصال",
+      "receipt_number": "رقم الإيصال",
+      "select_client": "اختر عميلاً",
+      "description": "وصف الخدمات",
+      "amount": "المبلغ (درهم)",
+      "payment_method": "طريقة الدفع",
+      "payment_methods": {
+        "cash": "نقداً",
+        "card": "بطاقة بنكية",
+        "transfer": "تحويل بنكي",
+        "check": "شيك"
+      },
+      "date": "التاريخ",
+      "no_receipts": "لا توجد إيصالات مسجلة",
+      "delete_confirm": "هل أنت متأكد من حذف هذا الإيصال؟",
+      "actions": "الإجراءات",
+      "download_pdf": "تحميل PDF",
+      "share_whatsapp": "مشاركة عبر واتساب",
+      "share_email": "مشاركة عبر البريد",
+      "view": "عرض",
+      "thank_you": "شكراً لثقتكم!",
+      "share_message": "مرحباً {client_name}،\n\nيرجى الاطلاع على الإيصال رقم {receipt_number} من {company_name} بمبلغ {amount} درهم.\n\nمع أطيب التحيات."
+    },
+    "settings": {
+      "title": "إعدادات الشركة",
+      "company_name": "اسم الشركة",
+      "logo": "الشعار",
+      "logo_upload": "رفع الشعار",
+      "address": "العنوان",
+      "tax_id": "الرقم الضريبي (ICE/SIRET)",
+      "phone": "الهاتف",
+      "save": "حفظ",
+      "saved": "تم حفظ الإعدادات بنجاح"
+    },
+    "common": {
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "delete": "حذف",
+      "edit": "تعديل",
+      "back": "رجوع",
+      "search": "بحث",
+      "loading": "جاري التحميل...",
+      "success": "نجاح",
+      "error": "خطأ"
+    }
+  }
+}
