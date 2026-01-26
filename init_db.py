@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import text, inspect
 from werkzeug.security import generate_password_hash
 
 class Base(DeclarativeBase):
@@ -69,10 +70,86 @@ class Settings(db.Model):
     receipt_number_format = db.Column(db.String(50), default='REC-{YYYY}{MM}{DD}-{N}')
     timezone = db.Column(db.String(50), default='Africa/Casablanca')
 
+def migrate_database(app):
+    """Run migrations to add missing columns to existing tables"""
+    with app.app_context():
+        inspector = inspect(db.engine)
+        
+        migrations = [
+            {
+                'table': 'settings',
+                'column': 'user_id',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS user_id VARCHAR(36) REFERENCES users(id)"
+            },
+            {
+                'table': 'settings',
+                'column': 'thermal_width',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS thermal_width INTEGER DEFAULT 58"
+            },
+            {
+                'table': 'settings',
+                'column': 'receipt_number_format',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS receipt_number_format VARCHAR(50) DEFAULT 'REC-{YYYY}{MM}{DD}-{N}'"
+            },
+            {
+                'table': 'settings',
+                'column': 'timezone',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS timezone VARCHAR(50) DEFAULT 'Africa/Casablanca'"
+            },
+            {
+                'table': 'companies',
+                'column': 'user_id',
+                'sql': "ALTER TABLE companies ADD COLUMN IF NOT EXISTS user_id VARCHAR(36) REFERENCES users(id)"
+            },
+            {
+                'table': 'companies',
+                'column': 'logo',
+                'sql': "ALTER TABLE companies ADD COLUMN IF NOT EXISTS logo VARCHAR(255) DEFAULT ''"
+            },
+            {
+                'table': 'clients',
+                'column': 'user_id',
+                'sql': "ALTER TABLE clients ADD COLUMN IF NOT EXISTS user_id VARCHAR(36) REFERENCES users(id)"
+            },
+            {
+                'table': 'receipts',
+                'column': 'user_id',
+                'sql': "ALTER TABLE receipts ADD COLUMN IF NOT EXISTS user_id VARCHAR(36) REFERENCES users(id)"
+            },
+            {
+                'table': 'receipts',
+                'column': 'company_id',
+                'sql': "ALTER TABLE receipts ADD COLUMN IF NOT EXISTS company_id VARCHAR(36)"
+            },
+            {
+                'table': 'users',
+                'column': 'is_active',
+                'sql': "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE"
+            },
+        ]
+        
+        for migration in migrations:
+            table_name = migration['table']
+            column_name = migration['column']
+            
+            if table_name in inspector.get_table_names():
+                existing_columns = [col['name'] for col in inspector.get_columns(table_name)]
+                
+                if column_name not in existing_columns:
+                    try:
+                        db.session.execute(text(migration['sql']))
+                        db.session.commit()
+                        print(f"Migration: Added column '{column_name}' to table '{table_name}'")
+                    except Exception as e:
+                        db.session.rollback()
+                        print(f"Migration warning for {table_name}.{column_name}: {e}")
+
 def init_database(app):
     db.init_app(app)
     with app.app_context():
         db.create_all()
+        
+        migrate_database(app)
         
         existing_admin = User.query.filter_by(username=os.environ.get('ADMIN_USERNAME', 'admin')).first()
         if not existing_admin:
@@ -91,7 +168,7 @@ def init_database(app):
             db.session.commit()
             print(f"Super admin created: {admin_username}")
         
-        print("Database tables created successfully!")
+        print("Database initialization completed!")
 
 if __name__ == '__main__':
     app = Flask(__name__)
