@@ -1,6 +1,9 @@
 import os
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
+import qrcode
+
+SITE_URL = "https://e7aac102-329f-48e9-a67b-03b5ad98498e-00-1gdvtlkjo0i55.picard.replit.dev"
 
 def generate_thermal_receipt(receipt, client, company, settings):
     thermal_width_mm = int(settings.get('thermal_width', 58))
@@ -11,35 +14,43 @@ def generate_thermal_receipt(receipt, client, company, settings):
     margin = 8
     
     if thermal_width_mm <= 48:
+        font_size_title = 16
         font_size_bold = 14
         font_size_normal = 12
         font_size_small = 10
         line_height = 22
         small_line_height = 18
+        qr_size = 80
     elif thermal_width_mm <= 58:
+        font_size_title = 20
         font_size_bold = 18
         font_size_normal = 14
         font_size_small = 12
         line_height = 28
         small_line_height = 22
+        qr_size = 100
     else:
+        font_size_title = 24
         font_size_bold = 22
         font_size_normal = 16
         font_size_small = 14
         line_height = 32
         small_line_height = 26
+        qr_size = 120
     
-    lines_needed = 30
-    height_px = lines_needed * line_height + 150
+    lines_needed = 35
+    height_px = lines_needed * line_height + 200 + qr_size
     
     img = Image.new('RGB', (width_px, height_px), 'white')
     draw = ImageDraw.Draw(img)
     
     try:
+        font_title = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size_title)
         font_bold = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size_bold)
         font_normal = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", font_size_normal)
         font_small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", font_size_small)
     except:
+        font_title = ImageFont.load_default()
         font_bold = ImageFont.load_default()
         font_normal = ImageFont.load_default()
         font_small = ImageFont.load_default()
@@ -48,11 +59,12 @@ def generate_thermal_receipt(receipt, client, company, settings):
     
     company_name = company.get('name', '') if company else 'QuickReceipt'
     if company_name:
-        text_bbox = draw.textbbox((0, 0), company_name, font=font_bold)
+        company_name_upper = company_name.upper()
+        text_bbox = draw.textbbox((0, 0), company_name_upper, font=font_title)
         text_width = text_bbox[2] - text_bbox[0]
         x = (width_px - text_width) // 2
-        draw.text((x, y), company_name, fill='black', font=font_bold)
-        y += line_height + 2
+        draw.text((x, y), company_name_upper, fill='black', font=font_title)
+        y += line_height + 5
     
     if company and company.get('address'):
         address_lines = company['address'].split('\n')
@@ -85,10 +97,10 @@ def generate_thermal_receipt(receipt, client, company, settings):
     y += 12
     
     receipt_text = f"RECU N: {receipt.get('receipt_number', '')}"
-    text_bbox = draw.textbbox((0, 0), receipt_text, font=font_bold)
+    text_bbox = draw.textbbox((0, 0), receipt_text, font=font_title)
     text_width = text_bbox[2] - text_bbox[0]
     x = (width_px - text_width) // 2
-    draw.text((x, y), receipt_text, fill='black', font=font_bold)
+    draw.text((x, y), receipt_text, fill='black', font=font_title)
     y += line_height
     
     date_str = receipt.get('created_at', '')[:10] if receipt.get('created_at') else ''
@@ -132,7 +144,10 @@ def generate_thermal_receipt(receipt, client, company, settings):
         desc_lines.append(current_line)
     
     for desc_line in desc_lines[:4]:
-        draw.text((margin, y), desc_line, fill='black', font=font_normal)
+        text_bbox = draw.textbbox((0, 0), desc_line, font=font_normal)
+        text_width = text_bbox[2] - text_bbox[0]
+        x = (width_px - text_width) // 2
+        draw.text((x, y), desc_line, fill='black', font=font_normal)
         y += small_line_height
     
     y += 12
@@ -140,10 +155,10 @@ def generate_thermal_receipt(receipt, client, company, settings):
     y += 15
     
     amount_text = f"TOTAL: {receipt.get('amount', '0')} MAD"
-    text_bbox = draw.textbbox((0, 0), amount_text, font=font_bold)
+    text_bbox = draw.textbbox((0, 0), amount_text, font=font_title)
     text_width = text_bbox[2] - text_bbox[0]
     x = (width_px - text_width) // 2
-    draw.text((x, y), amount_text, fill='black', font=font_bold)
+    draw.text((x, y), amount_text, fill='black', font=font_title)
     y += line_height + 5
     
     payment_methods = {
@@ -169,6 +184,22 @@ def generate_thermal_receipt(receipt, client, company, settings):
     text_width = text_bbox[2] - text_bbox[0]
     x = (width_px - text_width) // 2
     draw.text((x, y), thanks, fill='black', font=font_small)
+    y += small_line_height + 10
+    
+    qr = qrcode.QRCode(version=1, box_size=3, border=1)
+    qr.add_data(SITE_URL)
+    qr.make(fit=True)
+    qr_img = qr.make_image(fill_color="black", back_color="white")
+    qr_img = qr_img.resize((qr_size, qr_size))
+    qr_x = (width_px - qr_size) // 2
+    img.paste(qr_img, (qr_x, y))
+    y += qr_size + 8
+    
+    site_text = "quickreceipt.app"
+    text_bbox = draw.textbbox((0, 0), site_text, font=font_small)
+    text_width = text_bbox[2] - text_bbox[0]
+    x = (width_px - text_width) // 2
+    draw.text((x, y), site_text, fill='black', font=font_small)
     y += small_line_height + 15
     
     img = img.crop((0, 0, width_px, y))
