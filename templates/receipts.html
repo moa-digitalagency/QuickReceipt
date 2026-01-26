@@ -86,7 +86,7 @@
             
             <div class="lg:hidden divide-y divide-gray-100">
                 {% for receipt in receipts %}
-                <a href="{{ url_for('receipts.view_receipt', receipt_id=receipt.id) }}" class="block p-4 hover:bg-gray-50 transition-colors">
+                <a href="{{ url_for('receipts.view_receipt', receipt_id=receipt.id) }}" class="block p-4 pb-5 hover:bg-gray-50 transition-colors">
                     <div class="flex items-start justify-between mb-3">
                         <div>
                             <span class="inline-block px-3 py-1.5 bg-blue-100 text-blue-700 text-sm font-semibold rounded-lg">
