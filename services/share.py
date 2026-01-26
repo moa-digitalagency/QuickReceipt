@@ -1,6 +1,14 @@
+import os
 from utils.i18n import t
 
+def get_site_url():
+    domain = os.environ.get('REPLIT_DEV_DOMAIN', '')
+    if domain:
+        return f"https://{domain}"
+    return "https://quickreceipt.app"
+
 def get_share_message(receipt, client, company):
+    site_url = get_site_url()
     company_name = company.get('name', 'QuickReceipt') if company else 'QuickReceipt'
     client_name = client.get('name', '') if client else ''
     amount = receipt.get('amount', '0')
@@ -44,6 +52,8 @@ def get_share_message(receipt, client, company):
     lines.append("━━━━━━━━━━━━━━━━━━━━")
     lines.append("")
     lines.append("_Merci pour votre confiance!_")
+    lines.append("")
+    lines.append(f"🌐 {site_url}")
     
     message = '\n'.join(lines)
     
@@ -51,5 +61,7 @@ def get_share_message(receipt, client, company):
         'message': message,
         'whatsapp_number': client.get('whatsapp', '') if client else '',
         'email': client.get('email', '') if client else '',
-        'subject': f"{t('receipts.receipt')} {receipt_number}"
+        'subject': f"{t('receipts.receipt')} {receipt_number}",
+        'receipt_id': receipt.get('id', ''),
+        'site_url': site_url
     }

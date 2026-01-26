@@ -352,9 +352,10 @@ class Settings:
         if settings:
             return {
                 'thermal_width': settings.thermal_width,
-                'receipt_number_format': getattr(settings, 'receipt_number_format', 'REC-{YYYY}{MM}{DD}-{N}') or 'REC-{YYYY}{MM}{DD}-{N}'
+                'receipt_number_format': getattr(settings, 'receipt_number_format', 'REC-{YYYY}{MM}{DD}-{N}') or 'REC-{YYYY}{MM}{DD}-{N}',
+                'timezone': getattr(settings, 'timezone', 'Africa/Casablanca') or 'Africa/Casablanca'
             }
-        return {'thermal_width': 58, 'receipt_number_format': 'REC-{YYYY}{MM}{DD}-{N}'}
+        return {'thermal_width': 58, 'receipt_number_format': 'REC-{YYYY}{MM}{DD}-{N}', 'timezone': 'Africa/Casablanca'}
     
     @staticmethod
     def save(user_id, settings_dict):
@@ -365,4 +366,6 @@ class Settings:
         settings.thermal_width = settings_dict.get('thermal_width', 58)
         if hasattr(settings, 'receipt_number_format'):
             settings.receipt_number_format = settings_dict.get('receipt_number_format', 'REC-{YYYY}{MM}{DD}-{N}')
+        if hasattr(settings, 'timezone'):
+            settings.timezone = settings_dict.get('timezone', 'Africa/Casablanca')
         db.session.commit()

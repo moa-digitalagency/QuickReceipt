@@ -68,7 +68,12 @@
       "share_message": "Bonjour {client_name},\n\nVoici votre recu n{receipt_number} de {company_name}.\n\nMontant: {amount} MAD\n\nMerci pour votre confiance !",
       "receipt_saved": "Recu enregistre avec succes !",
       "what_next": "Que souhaitez-vous faire ?",
-      "close": "Fermer"
+      "close": "Fermer",
+      "whatsapp_choose_option": "Choisissez le type de partage",
+      "whatsapp_text_option": "Recap texte",
+      "whatsapp_text_desc": "Envoyer un resume texte du recu",
+      "whatsapp_ticket_option": "Recu Ticket",
+      "whatsapp_ticket_desc": "Envoyer l'image du ticket thermique"
     },
     "settings": {
       "title": "Parametres",
@@ -91,7 +96,9 @@
       "or_add_new_company": "ou ajouter une nouvelle entreprise",
       "receipt_settings": "Parametres des recus",
       "receipt_number_format": "Format du numero de recu",
-      "receipt_number_format_help": "Variables: {YYYY}=annee, {MM}=mois, {DD}=jour, {N}=numero sequentiel. Ex: REC-{YYYY}{MM}{DD}-{N}"
+      "receipt_number_format_help": "Variables: {YYYY}=annee, {MM}=mois, {DD}=jour, {N}=numero sequentiel. Ex: REC-{YYYY}{MM}{DD}-{N}",
+      "timezone": "Fuseau horaire",
+      "timezone_help": "Fuseau horaire pour l'affichage de la date et l'heure sur les recus"
     },
     "users": {
       "title": "Gestion des utilisateurs",
@@ -194,7 +201,12 @@
       "share_message": "Hello {client_name},\n\nHere is your receipt #{receipt_number} from {company_name}.\n\nAmount: {amount} MAD\n\nThank you for your trust!",
       "receipt_saved": "Receipt saved successfully!",
       "what_next": "What would you like to do?",
-      "close": "Close"
+      "close": "Close",
+      "whatsapp_choose_option": "Choose sharing type",
+      "whatsapp_text_option": "Text summary",
+      "whatsapp_text_desc": "Send a text summary of the receipt",
+      "whatsapp_ticket_option": "Ticket Receipt",
+      "whatsapp_ticket_desc": "Send the thermal ticket image"
     },
     "settings": {
       "title": "Settings",
@@ -217,7 +229,9 @@
       "or_add_new_company": "or add a new company",
       "receipt_settings": "Receipt Settings",
       "receipt_number_format": "Receipt Number Format",
-      "receipt_number_format_help": "Variables: {YYYY}=year, {MM}=month, {DD}=day, {N}=sequential number. Ex: REC-{YYYY}{MM}{DD}-{N}"
+      "receipt_number_format_help": "Variables: {YYYY}=year, {MM}=month, {DD}=day, {N}=sequential number. Ex: REC-{YYYY}{MM}{DD}-{N}",
+      "timezone": "Timezone",
+      "timezone_help": "Timezone for date and time display on receipts"
     },
     "users": {
       "title": "User Management",
@@ -320,7 +334,12 @@
       "share_message": "مرحبا {client_name}،\n\nاليك ايصالك رقم {receipt_number} من {company_name}.\n\nالمبلغ: {amount} درهم\n\nشكرا لثقتكم!",
       "receipt_saved": "تم حفظ الايصال بنجاح!",
       "what_next": "ماذا تريد ان تفعل؟",
-      "close": "اغلاق"
+      "close": "اغلاق",
+      "whatsapp_choose_option": "اختر نوع المشاركة",
+      "whatsapp_text_option": "ملخص نصي",
+      "whatsapp_text_desc": "ارسال ملخص نصي للايصال",
+      "whatsapp_ticket_option": "تذكرة الايصال",
+      "whatsapp_ticket_desc": "ارسال صورة التذكرة الحرارية"
     },
     "settings": {
       "title": "الاعدادات",
@@ -343,7 +362,9 @@
       "or_add_new_company": "او اضف شركة جديدة",
       "receipt_settings": "اعدادات الايصالات",
       "receipt_number_format": "صيغة رقم الايصال",
-      "receipt_number_format_help": "المتغيرات: {YYYY}=السنة، {MM}=الشهر، {DD}=اليوم، {N}=الرقم التسلسلي. مثال: REC-{YYYY}{MM}{DD}-{N}"
+      "receipt_number_format_help": "المتغيرات: {YYYY}=السنة، {MM}=الشهر، {DD}=اليوم، {N}=الرقم التسلسلي. مثال: REC-{YYYY}{MM}{DD}-{N}",
+      "timezone": "المنطقة الزمنية",
+      "timezone_help": "المنطقة الزمنية لعرض التاريخ والوقت على الايصالات"
     },
     "users": {
       "title": "ادارة المستخدمين",
