@@ -266,9 +266,24 @@ class Receipt:
         return [Receipt._to_dict(r) for r in receipts]
     
     @staticmethod
-    def create(user_id, client_id, description, amount, payment_method, company_id=''):
-        count = ReceiptModel.query.filter_by(user_id=user_id).count()
-        receipt_number = f"REC-{datetime.now().strftime('%Y%m%d')}-{count + 1:04d}"
+    def generate_receipt_number(user_id, format_template=None):
+        if not format_template:
+            format_template = 'REC-{YYYY}{MM}{DD}-{N}'
+        
+        count = ReceiptModel.query.filter_by(user_id=user_id).count() + 1
+        now = datetime.now()
+        
+        receipt_number = format_template
+        receipt_number = receipt_number.replace('{YYYY}', now.strftime('%Y'))
+        receipt_number = receipt_number.replace('{MM}', now.strftime('%m'))
+        receipt_number = receipt_number.replace('{DD}', now.strftime('%d'))
+        receipt_number = receipt_number.replace('{N}', f'{count:04d}')
+        
+        return receipt_number
+    
+    @staticmethod
+    def create(user_id, client_id, description, amount, payment_method, company_id='', receipt_number_format=None):
+        receipt_number = Receipt.generate_receipt_number(user_id, receipt_number_format)
         
         new_receipt = ReceiptModel(
             id=str(uuid.uuid4()),
@@ -335,8 +350,11 @@ class Settings:
             query = query.filter_by(user_id=user_id)
         settings = query.first()
         if settings:
-            return {'thermal_width': settings.thermal_width}
-        return {'thermal_width': 58}
+            return {
+                'thermal_width': settings.thermal_width,
+                'receipt_number_format': getattr(settings, 'receipt_number_format', 'REC-{YYYY}{MM}{DD}-{N}') or 'REC-{YYYY}{MM}{DD}-{N}'
+            }
+        return {'thermal_width': 58, 'receipt_number_format': 'REC-{YYYY}{MM}{DD}-{N}'}
     
     @staticmethod
     def save(user_id, settings_dict):
@@ -345,4 +363,6 @@ class Settings:
             settings = SettingsModel(user_id=user_id)
             db.session.add(settings)
         settings.thermal_width = settings_dict.get('thermal_width', 58)
+        if hasattr(settings, 'receipt_number_format'):
+            settings.receipt_number_format = settings_dict.get('receipt_number_format', 'REC-{YYYY}{MM}{DD}-{N}')
         db.session.commit()

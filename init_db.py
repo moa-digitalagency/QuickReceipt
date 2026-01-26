@@ -66,6 +66,7 @@ class Settings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=True)
     thermal_width = db.Column(db.Integer, default=58)
+    receipt_number_format = db.Column(db.String(50), default='REC-{YYYY}{MM}{DD}-{N}')
 
 def init_database(app):
     db.init_app(app)

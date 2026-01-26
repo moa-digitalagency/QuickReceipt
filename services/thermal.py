@@ -23,19 +23,22 @@ def generate_thermal_receipt(receipt, client, company, settings):
         font_size_text = 14
         line_height = 24
         qr_size = 80
+        logo_height = 50
     elif thermal_width_mm <= 58:
         font_size_title = 20
         font_size_text = 16
         line_height = 28
         qr_size = 100
+        logo_height = 60
     else:
         font_size_title = 26
         font_size_text = 20
         line_height = 34
         qr_size = 120
+        logo_height = 80
     
-    lines_needed = 40
-    height_px = lines_needed * line_height + 200 + qr_size
+    lines_needed = 45
+    height_px = lines_needed * line_height + 200 + qr_size + logo_height
     
     img = Image.new('RGB', (width_px, height_px), 'white')
     draw = ImageDraw.Draw(img)
@@ -50,6 +53,25 @@ def generate_thermal_receipt(receipt, client, company, settings):
         font_text_bold = ImageFont.load_default()
     
     y = margin + 5
+    
+    if company and company.get('logo') and os.path.exists(company['logo']):
+        try:
+            logo_img = Image.open(company['logo'])
+            aspect = logo_img.width / logo_img.height
+            logo_w = int(logo_height * aspect)
+            if logo_w > width_px - 2 * margin:
+                logo_w = width_px - 2 * margin
+                logo_h = int(logo_w / aspect)
+            else:
+                logo_h = logo_height
+            logo_img = logo_img.resize((logo_w, logo_h), Image.LANCZOS)
+            if logo_img.mode != 'RGB':
+                logo_img = logo_img.convert('RGB')
+            logo_x = (width_px - logo_w) // 2
+            img.paste(logo_img, (logo_x, y))
+            y += logo_h + 10
+        except Exception as e:
+            pass
     
     company_name = company.get('name', '') if company else 'QuickReceipt'
     if company_name:

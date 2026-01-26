@@ -88,7 +88,10 @@
       "no_companies": "Aucune entreprise configuree",
       "delete_company_confirm": "Etes-vous sur de vouloir supprimer cette entreprise ?",
       "select_company": "Selectionner une entreprise",
-      "or_add_new_company": "ou ajouter une nouvelle entreprise"
+      "or_add_new_company": "ou ajouter une nouvelle entreprise",
+      "receipt_settings": "Parametres des recus",
+      "receipt_number_format": "Format du numero de recu",
+      "receipt_number_format_help": "Variables: {YYYY}=annee, {MM}=mois, {DD}=jour, {N}=numero sequentiel. Ex: REC-{YYYY}{MM}{DD}-{N}"
     },
     "users": {
       "title": "Gestion des utilisateurs",
@@ -211,7 +214,10 @@
       "no_companies": "No companies configured",
       "delete_company_confirm": "Are you sure you want to delete this company?",
       "select_company": "Select a company",
-      "or_add_new_company": "or add a new company"
+      "or_add_new_company": "or add a new company",
+      "receipt_settings": "Receipt Settings",
+      "receipt_number_format": "Receipt Number Format",
+      "receipt_number_format_help": "Variables: {YYYY}=year, {MM}=month, {DD}=day, {N}=sequential number. Ex: REC-{YYYY}{MM}{DD}-{N}"
     },
     "users": {
       "title": "User Management",
@@ -334,7 +340,10 @@
       "no_companies": "لا توجد شركات مسجلة",
       "delete_company_confirm": "هل انت متاكد من حذف هذه الشركة؟",
       "select_company": "اختر شركة",
-      "or_add_new_company": "او اضف شركة جديدة"
+      "or_add_new_company": "او اضف شركة جديدة",
+      "receipt_settings": "اعدادات الايصالات",
+      "receipt_number_format": "صيغة رقم الايصال",
+      "receipt_number_format_help": "المتغيرات: {YYYY}=السنة، {MM}=الشهر، {DD}=اليوم، {N}=الرقم التسلسلي. مثال: REC-{YYYY}{MM}{DD}-{N}"
     },
     "users": {
       "title": "ادارة المستخدمين",

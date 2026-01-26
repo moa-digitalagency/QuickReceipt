@@ -61,13 +61,17 @@ def add_receipt():
             return render_template('receipt_form.html', receipt=None, clients=clients, companies=companies,
                                  error="Veuillez selectionner ou ajouter une entreprise")
         
+        settings = Settings.get(user_id=user_id)
+        receipt_number_format = settings.get('receipt_number_format', 'REC-{YYYY}{MM}{DD}-{N}')
+        
         new_receipt = Receipt.create(
             user_id=user_id,
             client_id=client_id,
             company_id=company_id,
             description=request.form.get('description', ''),
             amount=request.form.get('amount', '0'),
-            payment_method=request.form.get('payment_method', '')
+            payment_method=request.form.get('payment_method', ''),
+            receipt_number_format=receipt_number_format
         )
         
         session['last_receipt_id'] = new_receipt['id']
