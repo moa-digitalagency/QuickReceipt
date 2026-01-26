@@ -64,7 +64,18 @@ def generate_receipt_pdf(receipt, client, company, settings):
     elements.append(Paragraph(f"<b>{t('receipts.receipt')}</b>", receipt_title_style))
     elements.append(Paragraph(f"<b>N: {receipt.get('receipt_number', '')}</b>", receipt_title_style))
     
-    date_str = receipt.get('created_at', '')[:16] if receipt.get('created_at') else ''
+    created_at = receipt.get('created_at', '')
+    if created_at:
+        from datetime import datetime as dt_module
+        try:
+            dt = dt_module.fromisoformat(created_at.replace('Z', '+00:00'))
+            months_fr = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 
+                        'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre']
+            date_str = f"{dt.day} {months_fr[dt.month-1]} {dt.year} a {dt.strftime('%H:%M')}"
+        except:
+            date_str = created_at[:16]
+    else:
+        date_str = ''
     elements.append(Paragraph(f"Date: {date_str}", text_style))
     elements.append(Spacer(1, 10*mm))
     
