@@ -74,26 +74,3 @@
 </div>
 {% endblock %}
 
-{% block scripts %}
-<script>
-async function shareViaWhatsApp(receiptId) {
-    try {
-        const response = await fetch(`/api/share/${receiptId}`);
-        const data = await response.json();
-        
-        const message = encodeURIComponent(data.message);
-        let whatsappUrl = `https://wa.me/`;
-        
-        if (data.whatsapp_number) {
-            const cleanNumber = data.whatsapp_number.replace(/[^0-9]/g, '');
-            whatsappUrl += cleanNumber;
-        }
-        
-        whatsappUrl += `?text=${message}`;
-        window.open(whatsappUrl, '_blank');
-    } catch (error) {
-        console.error('Error sharing via WhatsApp:', error);
-    }
-}
-</script>
-{% endblock %}
