@@ -1,5 +1,6 @@
 import os
 from io import BytesIO
+from concurrent.futures import ProcessPoolExecutor
 from PIL import Image, ImageDraw, ImageFont
 import qrcode
 from urllib.parse import urlparse  # Ajout pour extraire le domaine proprement
@@ -17,7 +18,7 @@ def get_site_url():
     # 3. Fallback par défaut (ne sera utilisé que si rien d'autre n'est configuré)
     return "https://quickreceipt.app"
 
-def generate_thermal_receipt(receipt, client, company, settings):
+def _generate_thermal_receipt_task(receipt, client, company, settings):
     # Utiliser l'URL passée dans les settings en priorité, sinon chercher dans l'environnement
     site_url = settings.get('site_url') or get_site_url()
 
@@ -251,6 +252,19 @@ def generate_thermal_receipt(receipt, client, company, settings):
 
     buffer = BytesIO()
     img.save(buffer, format='PNG')
-    buffer.seek(0)
+    return buffer.getvalue()
 
-    return buffer
+def generate_thermal_receipt(receipt, client, company, settings):
+    """
+    Wrapper to run image generation in a separate process to avoid blocking the main thread/process.
+    Uses a context manager to ensure safe process lifecycle and cleanup.
+    """
+    with ProcessPoolExecutor(max_workers=1) as executor:
+        # Submit the task to the process pool
+        future = executor.submit(_generate_thermal_receipt_task, receipt, client, company, settings)
+
+        # Wait for the result (this releases GIL if running in a thread)
+        image_bytes = future.result()
+
+    # Wrap in BytesIO as expected by the caller
+    return BytesIO(image_bytes)
