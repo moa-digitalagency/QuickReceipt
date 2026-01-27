@@ -50,6 +50,9 @@ class Client(db.Model):
 
 class Receipt(db.Model):
     __tablename__ = 'receipts'
+    __table_args__ = (
+        db.Index('idx_receipts_user_created', 'user_id', 'created_at'),
+    )
     
     id = db.Column(db.String(36), primary_key=True)
     user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
@@ -143,6 +146,32 @@ def migrate_database(app):
                     except Exception as e:
                         db.session.rollback()
                         print(f"Migration warning for {table_name}.{column_name}: {e}")
+
+        # Check for missing indexes
+        index_migrations = [
+            {
+                'table': 'receipts',
+                'index': 'idx_receipts_user_created',
+                'sql': "CREATE INDEX IF NOT EXISTS idx_receipts_user_created ON receipts (user_id, created_at)"
+            }
+        ]
+
+        for migration in index_migrations:
+            table_name = migration['table']
+            index_name = migration['index']
+
+            if table_name in inspector.get_table_names():
+                indexes = inspector.get_indexes(table_name)
+                existing_indexes = [idx['name'] for idx in indexes]
+
+                if index_name not in existing_indexes:
+                    try:
+                        db.session.execute(text(migration['sql']))
+                        db.session.commit()
+                        print(f"Migration: Added index '{index_name}' to table '{table_name}'")
+                    except Exception as e:
+                        db.session.rollback()
+                        print(f"Migration warning for {table_name}.{index_name}: {e}")
 
 def init_database(app):
     db.init_app(app)
