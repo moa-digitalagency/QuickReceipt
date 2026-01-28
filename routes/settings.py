@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 import os
 
 from models import Settings, Company
-from utils.files import save_logo, save_icon
+from utils.files import save_logo
 
 settings_bp = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -18,20 +18,6 @@ def settings_page():
         settings['receipt_number_format'] = request.form.get('receipt_number_format', 'REC-{YYYY}{MM}{DD}-{N}')
         settings['timezone'] = request.form.get('timezone', 'Africa/Casablanca')
 
-        # PWA Settings
-        settings['pwa_enabled'] = 'pwa_enabled' in request.form
-        settings['pwa_app_name'] = request.form.get('pwa_app_name', 'Receipt App')
-        settings['pwa_short_name'] = request.form.get('pwa_short_name', 'Receipts')
-        settings['pwa_description'] = request.form.get('pwa_description', 'Receipt Management Application')
-        settings['pwa_theme_color'] = request.form.get('pwa_theme_color', '#3B82F6')
-        settings['pwa_background_color'] = request.form.get('pwa_background_color', '#ffffff')
-
-        if 'pwa_icon' in request.files:
-            file = request.files['pwa_icon']
-            if file and file.filename:
-                icon_path = save_icon(file)
-                if icon_path:
-                    settings['pwa_icon_url'] = '/' + icon_path
 
         Settings.save(user_id, settings)
         return redirect(url_for('settings.settings_page'))
