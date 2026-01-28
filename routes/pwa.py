@@ -5,8 +5,8 @@ pwa_bp = Blueprint('pwa', __name__)
 
 @pwa_bp.route('/manifest.json')
 def manifest():
-    user_id = session.get('user_id')
-    settings = Settings.get(user_id=user_id)
+    # Use global settings for PWA manifest to ensure consistency for all users
+    settings = Settings.get_global()
 
     icon_url = settings.get('pwa_icon_url', '/static/favicon.svg')
     icon_type = 'image/svg+xml'

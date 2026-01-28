@@ -171,61 +171,6 @@
                 <p class="mt-1 text-sm text-gray-500">{{ t('settings.thermal_width_help') }}</p>
             </div>
 
-            <!-- PWA Settings -->
-            <div class="border-t border-gray-200 pt-6 mt-6 mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ t('settings.pwa_settings') }}</h3>
-
-                <div class="mb-4 flex items-center">
-                    <input type="checkbox" name="pwa_enabled" id="pwa_enabled" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" {% if settings.pwa_enabled %}checked{% endif %}>
-                    <label for="pwa_enabled" class="ml-2 block text-sm text-gray-900">
-                        {{ t('settings.pwa_enabled') }}
-                    </label>
-                </div>
-
-                <div class="mb-4">
-                    <label for="pwa_app_name" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.pwa_app_name') }}</label>
-                    <input type="text" name="pwa_app_name" id="pwa_app_name" value="{{ settings.pwa_app_name }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                </div>
-
-                <div class="mb-4">
-                    <label for="pwa_short_name" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.pwa_short_name') }}</label>
-                    <input type="text" name="pwa_short_name" id="pwa_short_name" value="{{ settings.pwa_short_name }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                </div>
-
-                <div class="mb-4">
-                    <label for="pwa_description" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.pwa_description') }}</label>
-                    <input type="text" name="pwa_description" id="pwa_description" value="{{ settings.pwa_description }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                </div>
-
-                <div class="mb-4">
-                    <label for="pwa_icon" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.pwa_icon') }}</label>
-                    <div class="flex items-center space-x-4">
-                        {% if settings.pwa_icon_url %}
-                            <img src="{{ settings.pwa_icon_url }}" alt="App Icon" class="h-12 w-12 rounded-lg bg-gray-100 object-contain">
-                        {% endif %}
-                        <input type="file" name="pwa_icon" id="pwa_icon" accept="image/png, image/jpeg" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="mb-4">
-                        <label for="pwa_theme_color" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.pwa_theme_color') }}</label>
-                        <div class="flex items-center">
-                            <input type="color" name="pwa_theme_color" id="pwa_theme_color" value="{{ settings.pwa_theme_color }}" class="h-10 w-10 border border-gray-300 rounded cursor-pointer mr-2">
-                            <input type="text" name="pwa_theme_color_text" value="{{ settings.pwa_theme_color }}" onchange="document.getElementById('pwa_theme_color').value = this.value" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="pwa_background_color" class="block text-sm font-medium text-gray-700 mb-2">{{ t('settings.pwa_background_color') }}</label>
-                         <div class="flex items-center">
-                            <input type="color" name="pwa_background_color" id="pwa_background_color" value="{{ settings.pwa_background_color }}" class="h-10 w-10 border border-gray-300 rounded cursor-pointer mr-2">
-                            <input type="text" name="pwa_background_color_text" value="{{ settings.pwa_background_color }}" onchange="document.getElementById('pwa_background_color').value = this.value" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <button type="submit" class="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
                 {{ t('settings.save') }}
             </button>

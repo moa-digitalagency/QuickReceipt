@@ -112,7 +112,8 @@
         "install_title": "Installer l'application",
         "install_desc": "Installez notre application pour un acces plus rapide et hors ligne.",
         "install_btn": "Installer",
-        "later_btn": "Plus tard"
+        "later_btn": "Plus tard",
+        "configuration_title": "Configuration PWA"
     },
     "users": {
       "title": "Gestion des utilisateurs",
@@ -259,7 +260,8 @@
         "install_title": "Install App",
         "install_desc": "Install our app for faster and offline access.",
         "install_btn": "Install",
-        "later_btn": "Later"
+        "later_btn": "Later",
+        "configuration_title": "PWA Configuration"
     },
     "users": {
       "title": "User Management",
@@ -406,7 +408,8 @@
         "install_title": "تثبيت التطبيق",
         "install_desc": "قم بتثبيت تطبيقنا للوصول بشكل اسرع وبدون اتصال بالانترنت.",
         "install_btn": "تثبيت",
-        "later_btn": "لاحقا"
+        "later_btn": "لاحقا",
+        "configuration_title": "اعدادات PWA"
     },
     "users": {
       "title": "ادارة المستخدمين",

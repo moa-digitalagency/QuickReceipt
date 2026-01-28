@@ -358,17 +358,47 @@ class Settings:
             'pwa_description': 'Receipt Management Application'
         }
 
-        if not user_id:
-             return defaults
+        # 1. Overlay Global Settings (PWA fields)
+        global_settings = SettingsModel.query.filter(SettingsModel.user_id.is_(None)).first()
+        if global_settings:
+            defaults.update({
+                'pwa_enabled': getattr(global_settings, 'pwa_enabled', True),
+                'pwa_app_name': getattr(global_settings, 'pwa_app_name', 'Receipt App') or 'Receipt App',
+                'pwa_short_name': getattr(global_settings, 'pwa_short_name', 'Receipts') or 'Receipts',
+                'pwa_icon_url': getattr(global_settings, 'pwa_icon_url', '/static/favicon.svg') or '/static/favicon.svg',
+                'pwa_theme_color': getattr(global_settings, 'pwa_theme_color', '#3B82F6') or '#3B82F6',
+                'pwa_background_color': getattr(global_settings, 'pwa_background_color', '#ffffff') or '#ffffff',
+                'pwa_description': getattr(global_settings, 'pwa_description', 'Receipt Management Application') or 'Receipt Management Application'
+            })
 
-        query = SettingsModel.query.filter_by(user_id=user_id)
-        settings = query.first()
+        # 2. Overlay User Settings (User Prefs)
+        if user_id:
+            user_settings = SettingsModel.query.filter_by(user_id=user_id).first()
+            if user_settings:
+                defaults.update({
+                    'thermal_width': user_settings.thermal_width,
+                    'receipt_number_format': getattr(user_settings, 'receipt_number_format', 'REC-{YYYY}{MM}{DD}-{N}') or 'REC-{YYYY}{MM}{DD}-{N}',
+                    'timezone': getattr(user_settings, 'timezone', 'Africa/Casablanca') or 'Africa/Casablanca',
+                })
+
+        return defaults
+
+    @staticmethod
+    def get_global():
+        """Get global settings (PWA settings) without user overrides"""
+        defaults = {
+            'pwa_enabled': True,
+            'pwa_app_name': 'Receipt App',
+            'pwa_short_name': 'Receipts',
+            'pwa_icon_url': '/static/favicon.svg',
+            'pwa_theme_color': '#3B82F6',
+            'pwa_background_color': '#ffffff',
+            'pwa_description': 'Receipt Management Application'
+        }
+
+        settings = SettingsModel.query.filter(SettingsModel.user_id.is_(None)).first()
         if settings:
-            result = defaults.copy()
-            result.update({
-                'thermal_width': settings.thermal_width,
-                'receipt_number_format': getattr(settings, 'receipt_number_format', 'REC-{YYYY}{MM}{DD}-{N}') or 'REC-{YYYY}{MM}{DD}-{N}',
-                'timezone': getattr(settings, 'timezone', 'Africa/Casablanca') or 'Africa/Casablanca',
+            defaults.update({
                 'pwa_enabled': getattr(settings, 'pwa_enabled', True),
                 'pwa_app_name': getattr(settings, 'pwa_app_name', 'Receipt App') or 'Receipt App',
                 'pwa_short_name': getattr(settings, 'pwa_short_name', 'Receipts') or 'Receipts',
@@ -377,12 +407,15 @@ class Settings:
                 'pwa_background_color': getattr(settings, 'pwa_background_color', '#ffffff') or '#ffffff',
                 'pwa_description': getattr(settings, 'pwa_description', 'Receipt Management Application') or 'Receipt Management Application'
             })
-            return result
         return defaults
     
     @staticmethod
     def save(user_id, settings_dict):
-        settings = SettingsModel.query.filter_by(user_id=user_id).first()
+        if user_id is None:
+            settings = SettingsModel.query.filter(SettingsModel.user_id.is_(None)).first()
+        else:
+            settings = SettingsModel.query.filter_by(user_id=user_id).first()
+
         if not settings:
             settings = SettingsModel(user_id=user_id)
             db.session.add(settings)
