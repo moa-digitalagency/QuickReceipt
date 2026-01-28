@@ -7,6 +7,7 @@ from routes.settings import settings_bp
 from routes.api import api_bp
 from routes.auth import auth_bp
 from routes.users import users_bp
+from routes.pwa import pwa_bp
 
 def register_routes(app):
     app.register_blueprint(auth_bp)
@@ -16,3 +17,4 @@ def register_routes(app):
     app.register_blueprint(settings_bp)
     app.register_blueprint(api_bp)
     app.register_blueprint(users_bp)
+    app.register_blueprint(pwa_bp)

@@ -345,17 +345,40 @@ class Receipt:
 class Settings:
     @staticmethod
     def get(user_id=None):
-        query = SettingsModel.query
-        if user_id:
-            query = query.filter_by(user_id=user_id)
+        defaults = {
+            'thermal_width': 58,
+            'receipt_number_format': 'REC-{YYYY}{MM}{DD}-{N}',
+            'timezone': 'Africa/Casablanca',
+            'pwa_enabled': True,
+            'pwa_app_name': 'Receipt App',
+            'pwa_short_name': 'Receipts',
+            'pwa_icon_url': '/static/favicon.svg',
+            'pwa_theme_color': '#3B82F6',
+            'pwa_background_color': '#ffffff',
+            'pwa_description': 'Receipt Management Application'
+        }
+
+        if not user_id:
+             return defaults
+
+        query = SettingsModel.query.filter_by(user_id=user_id)
         settings = query.first()
         if settings:
-            return {
+            result = defaults.copy()
+            result.update({
                 'thermal_width': settings.thermal_width,
                 'receipt_number_format': getattr(settings, 'receipt_number_format', 'REC-{YYYY}{MM}{DD}-{N}') or 'REC-{YYYY}{MM}{DD}-{N}',
-                'timezone': getattr(settings, 'timezone', 'Africa/Casablanca') or 'Africa/Casablanca'
-            }
-        return {'thermal_width': 58, 'receipt_number_format': 'REC-{YYYY}{MM}{DD}-{N}', 'timezone': 'Africa/Casablanca'}
+                'timezone': getattr(settings, 'timezone', 'Africa/Casablanca') or 'Africa/Casablanca',
+                'pwa_enabled': getattr(settings, 'pwa_enabled', True),
+                'pwa_app_name': getattr(settings, 'pwa_app_name', 'Receipt App') or 'Receipt App',
+                'pwa_short_name': getattr(settings, 'pwa_short_name', 'Receipts') or 'Receipts',
+                'pwa_icon_url': getattr(settings, 'pwa_icon_url', '/static/favicon.svg') or '/static/favicon.svg',
+                'pwa_theme_color': getattr(settings, 'pwa_theme_color', '#3B82F6') or '#3B82F6',
+                'pwa_background_color': getattr(settings, 'pwa_background_color', '#ffffff') or '#ffffff',
+                'pwa_description': getattr(settings, 'pwa_description', 'Receipt Management Application') or 'Receipt Management Application'
+            })
+            return result
+        return defaults
     
     @staticmethod
     def save(user_id, settings_dict):
@@ -363,9 +386,27 @@ class Settings:
         if not settings:
             settings = SettingsModel(user_id=user_id)
             db.session.add(settings)
+
         settings.thermal_width = settings_dict.get('thermal_width', 58)
         if hasattr(settings, 'receipt_number_format'):
             settings.receipt_number_format = settings_dict.get('receipt_number_format', 'REC-{YYYY}{MM}{DD}-{N}')
         if hasattr(settings, 'timezone'):
             settings.timezone = settings_dict.get('timezone', 'Africa/Casablanca')
+
+        # PWA Fields
+        if hasattr(settings, 'pwa_enabled'):
+            settings.pwa_enabled = settings_dict.get('pwa_enabled', True)
+        if hasattr(settings, 'pwa_app_name'):
+            settings.pwa_app_name = settings_dict.get('pwa_app_name', 'Receipt App')
+        if hasattr(settings, 'pwa_short_name'):
+            settings.pwa_short_name = settings_dict.get('pwa_short_name', 'Receipts')
+        if hasattr(settings, 'pwa_icon_url'):
+            settings.pwa_icon_url = settings_dict.get('pwa_icon_url', '/static/favicon.svg')
+        if hasattr(settings, 'pwa_theme_color'):
+            settings.pwa_theme_color = settings_dict.get('pwa_theme_color', '#3B82F6')
+        if hasattr(settings, 'pwa_background_color'):
+            settings.pwa_background_color = settings_dict.get('pwa_background_color', '#ffffff')
+        if hasattr(settings, 'pwa_description'):
+            settings.pwa_description = settings_dict.get('pwa_description', 'Receipt Management Application')
+
         db.session.commit()

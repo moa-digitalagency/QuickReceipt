@@ -73,6 +73,15 @@ class Settings(db.Model):
     receipt_number_format = db.Column(db.String(50), default='REC-{YYYY}{MM}{DD}-{N}')
     timezone = db.Column(db.String(50), default='Africa/Casablanca')
 
+    # PWA Settings
+    pwa_enabled = db.Column(db.Boolean, default=True)
+    pwa_app_name = db.Column(db.String(100), default='Receipt App')
+    pwa_short_name = db.Column(db.String(50), default='Receipts')
+    pwa_icon_url = db.Column(db.String(255), default='/static/favicon.svg')
+    pwa_theme_color = db.Column(db.String(20), default='#3B82F6')
+    pwa_background_color = db.Column(db.String(20), default='#ffffff')
+    pwa_description = db.Column(db.String(255), default='Receipt Management Application')
+
 def migrate_database(app):
     """Run migrations to add missing columns to existing tables"""
     with app.app_context():
@@ -128,6 +137,42 @@ def migrate_database(app):
                 'table': 'users',
                 'column': 'is_active',
                 'sql': "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE"
+            },
+            # PWA Migrations
+            {
+                'table': 'settings',
+                'column': 'pwa_enabled',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_enabled BOOLEAN DEFAULT TRUE"
+            },
+            {
+                'table': 'settings',
+                'column': 'pwa_app_name',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_app_name VARCHAR(100) DEFAULT 'Receipt App'"
+            },
+            {
+                'table': 'settings',
+                'column': 'pwa_short_name',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_short_name VARCHAR(50) DEFAULT 'Receipts'"
+            },
+            {
+                'table': 'settings',
+                'column': 'pwa_icon_url',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_icon_url VARCHAR(255) DEFAULT '/static/favicon.svg'"
+            },
+            {
+                'table': 'settings',
+                'column': 'pwa_theme_color',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_theme_color VARCHAR(20) DEFAULT '#3B82F6'"
+            },
+            {
+                'table': 'settings',
+                'column': 'pwa_background_color',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_background_color VARCHAR(20) DEFAULT '#ffffff'"
+            },
+            {
+                'table': 'settings',
+                'column': 'pwa_description',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_description VARCHAR(255) DEFAULT 'Receipt Management Application'"
             },
         ]
         

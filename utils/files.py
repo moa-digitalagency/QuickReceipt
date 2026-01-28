@@ -38,3 +38,25 @@ def save_logo(file):
         return filepath
     except Exception:
         return None
+
+def save_icon(file):
+    if not file or not file.filename:
+        return None
+
+    if not allowed_file(file.filename):
+        return None
+
+    filename = f"icon_{uuid.uuid4().hex[:8]}.png"
+    filepath = os.path.join(UPLOAD_DIR, filename)
+
+    try:
+        img = PILImage.open(file.stream)
+        img.verify()
+        file.seek(0)
+        img = PILImage.open(file.stream)
+        # Ensure it's square-ish or just resize to fit 512x512
+        img.thumbnail((512, 512))
+        img.save(filepath, 'PNG')
+        return filepath
+    except Exception:
+        return None
