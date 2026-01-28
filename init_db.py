@@ -87,6 +87,9 @@ def migrate_database(app):
     with app.app_context():
         inspector = inspect(db.engine)
         
+        handled_columns = set()
+
+        # 1. Manual/Historical Migrations
         migrations = [
             {
                 'table': 'settings',
@@ -180,6 +183,9 @@ def migrate_database(app):
             table_name = migration['table']
             column_name = migration['column']
             
+            # Track as handled regardless of whether it exists (to avoid duplicate checks)
+            handled_columns.add((table_name, column_name))
+
             if table_name in inspector.get_table_names():
                 existing_columns = [col['name'] for col in inspector.get_columns(table_name)]
                 
@@ -191,6 +197,73 @@ def migrate_database(app):
                     except Exception as e:
                         db.session.rollback()
                         print(f"Migration warning for {table_name}.{column_name}: {e}")
+
+        # 2. Dynamic/Auto Migrations
+        # Iterates through all defined models and checks if columns exist in the database
+        print("Running dynamic migration check...")
+        for table_name, table in db.metadata.tables.items():
+            if table_name in inspector.get_table_names():
+                existing_columns = [col['name'] for col in inspector.get_columns(table_name)]
+
+                for column in table.columns:
+                    if (table_name, column.name) in handled_columns:
+                        continue
+
+                    if column.name not in existing_columns:
+                        # Determine column type
+                        col_type = str(column.type)
+
+                        # Normalize type for SQL
+                        if 'String' in str(type(column.type)):
+                            length = column.type.length
+                            col_type = f"VARCHAR({length})" if length else "TEXT"
+                        elif 'Integer' in str(type(column.type)):
+                            col_type = "INTEGER"
+                        elif 'Boolean' in str(type(column.type)):
+                            col_type = "BOOLEAN"
+                        elif 'DateTime' in str(type(column.type)):
+                            col_type = "TIMESTAMP"
+                        elif 'Numeric' in str(type(column.type)):
+                             col_type = f"NUMERIC({column.type.precision}, {column.type.scale})"
+                        elif 'Text' in str(type(column.type)):
+                            col_type = "TEXT"
+
+                        # Handle Default Values
+                        default_clause = ""
+                        if column.default is not None:
+                            if hasattr(column.default, 'arg'):
+                                if isinstance(column.default.arg, str):
+                                    # Escape single quotes for SQL safety
+                                    escaped_arg = column.default.arg.replace("'", "''")
+                                    default_clause = f" DEFAULT '{escaped_arg}'"
+                                elif isinstance(column.default.arg, (int, float)):
+                                     default_clause = f" DEFAULT {column.default.arg}"
+                                elif isinstance(column.default.arg, bool):
+                                     default_clause = f" DEFAULT {'TRUE' if column.default.arg else 'FALSE'}"
+
+                        # Handle Foreign Keys
+                        fk_clause = ""
+                        if column.foreign_keys:
+                            fk = list(column.foreign_keys)[0]
+                            # fk.target_fullname is usually 'tablename.columnname'
+                            try:
+                                target_table, target_col = fk.target_fullname.split('.')
+                                fk_clause = f" REFERENCES {target_table}({target_col})"
+                            except ValueError:
+                                # Fallback if split fails
+                                pass
+
+                        # Construct SQL
+                        # IF NOT EXISTS is redundant since we check in Python, and removing it improves compatibility (e.g. SQLite)
+                        sql = f"ALTER TABLE {table_name} ADD COLUMN {column.name} {col_type}{fk_clause}{default_clause}"
+
+                        try:
+                            db.session.execute(text(sql))
+                            db.session.commit()
+                            print(f"Dynamic Migration: Added column '{column.name}' to table '{table_name}'")
+                        except Exception as e:
+                            db.session.rollback()
+                            print(f"Dynamic Migration warning for {table_name}.{column.name}: {e}")
 
         # Check for missing indexes
         index_migrations = [
