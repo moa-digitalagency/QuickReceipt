@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ t('app.name') }}{% endblock %}</title>
+    <link rel="manifest" href="{{ url_for('pwa.manifest') }}">
+    <meta name="theme-color" content="{{ settings.pwa_theme_color or '#3B82F6' }}">
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -121,6 +123,29 @@
             <main class="flex-1 p-4 md:p-6 overflow-auto">
                 {% block content %}{% endblock %}
             </main>
+        </div>
+    </div>
+
+    <div id="installModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full mx-4 overflow-hidden p-6 text-center">
+            <div class="mb-4 flex justify-center">
+                {% if settings.pwa_icon_url %}
+                <img src="{{ settings.pwa_icon_url }}" alt="App Icon" class="h-20 w-20 rounded-xl shadow-md object-cover">
+                {% else %}
+                <img src="/static/favicon.svg" alt="App Icon" class="h-20 w-20 rounded-xl shadow-md">
+                {% endif %}
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">{{ t('pwa.install_title') or 'Installer l\'application' }}</h3>
+            <p class="text-gray-600 mb-6">{{ t('pwa.install_desc') or 'Installez notre application pour un acces plus rapide et hors ligne.' }}</p>
+
+            <div class="flex flex-col gap-3">
+                <button id="installBtn" class="w-full py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
+                    {{ t('pwa.install_btn') or 'Installer' }}
+                </button>
+                <button onclick="closeInstallModal()" class="w-full py-3 text-gray-500 font-medium hover:text-gray-700">
+                    {{ t('pwa.later_btn') or 'Plus tard' }}
+                </button>
+            </div>
         </div>
     </div>
 
@@ -257,6 +282,74 @@
                 closeWhatsAppModal();
             }, 500);
         }
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('SW registered');
+                }).catch(registrationError => {
+                    console.log('SW registration failed: ', registrationError);
+                });
+            });
+        }
+
+        // Install Prompt Logic
+        let deferredPrompt;
+        const installModal = document.getElementById('installModal');
+        const installBtn = document.getElementById('installBtn');
+        const pwaEnabled = {{ 'true' if settings.pwa_enabled else 'false' }};
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+
+            // Check if user has already dismissed or installed, or if PWA is disabled
+            // We want to show it on "first login" (or first visit) if enabled.
+            // Using localStorage to track if we've shown it or user dismissed it.
+            if (pwaEnabled && !localStorage.getItem('pwaDismissed')) {
+                showInstallModal();
+            }
+        });
+
+        function showInstallModal() {
+            installModal.classList.remove('hidden');
+            installModal.classList.add('flex');
+        }
+
+        function closeInstallModal() {
+            installModal.classList.add('hidden');
+            installModal.classList.remove('flex');
+            localStorage.setItem('pwaDismissed', 'true');
+        }
+
+        if (installBtn) {
+            installBtn.addEventListener('click', (e) => {
+                // Hide the app provided install promotion
+                closeInstallModal();
+                // Show the install prompt
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    // Wait for the user to respond to the prompt
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the A2HS prompt');
+                            localStorage.setItem('pwaInstalled', 'true');
+                        } else {
+                            console.log('User dismissed the A2HS prompt');
+                        }
+                        deferredPrompt = null;
+                    });
+                }
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            localStorage.setItem('pwaInstalled', 'true');
+            console.log('PWA was installed');
+        });
     </script>
     {% block scripts %}{% endblock %}
 </body>

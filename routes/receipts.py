@@ -101,11 +101,14 @@ def view_receipt(receipt_id):
     if not receipt:
         return redirect(url_for('receipts.list_receipts'))
     
-    client = Client.get_by_id(receipt.get('client_id'), user_id=user_id)
+    # Use receipt owner's ID for fetching related data to ensure consistency for public views
+    owner_id = receipt.get('user_id')
+
+    client = Client.get_by_id(receipt.get('client_id'), user_id=owner_id)
     receipt['client'] = client
-    company = Company.get_by_id(receipt.get('company_id'), user_id=user_id)
+    company = Company.get_by_id(receipt.get('company_id'), user_id=owner_id)
     receipt['company'] = company
-    settings = Settings.get(user_id=user_id)
+    settings = Settings.get(user_id=owner_id)
     
     return render_template('receipt_view.html', receipt=receipt, settings=settings)
 
@@ -122,9 +125,11 @@ def download_pdf(receipt_id):
     if not receipt:
         return redirect(url_for('receipts.list_receipts'))
     
-    client = Client.get_by_id(receipt.get('client_id'), user_id=user_id)
-    company = Company.get_by_id(receipt.get('company_id'), user_id=user_id)
-    settings = Settings.get(user_id=user_id)
+    owner_id = receipt.get('user_id')
+
+    client = Client.get_by_id(receipt.get('client_id'), user_id=owner_id)
+    company = Company.get_by_id(receipt.get('company_id'), user_id=owner_id)
+    settings = Settings.get(user_id=owner_id)
     settings['site_url'] = request.url_root.rstrip('/')
     
     buffer = generate_receipt_pdf(receipt, client, company, settings)
@@ -143,9 +148,11 @@ def download_thermal(receipt_id):
     if not receipt:
         return redirect(url_for('receipts.list_receipts'))
     
-    client = Client.get_by_id(receipt.get('client_id'), user_id=user_id)
-    company = Company.get_by_id(receipt.get('company_id'), user_id=user_id)
-    settings = Settings.get(user_id=user_id)
+    owner_id = receipt.get('user_id')
+
+    client = Client.get_by_id(receipt.get('client_id'), user_id=owner_id)
+    company = Company.get_by_id(receipt.get('company_id'), user_id=owner_id)
+    settings = Settings.get(user_id=owner_id)
     settings['site_url'] = request.url_root.rstrip('/')
     
     buffer = generate_thermal_receipt(receipt, client, company, settings)

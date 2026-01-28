@@ -98,7 +98,21 @@
       "receipt_number_format": "Format du numero de recu",
       "receipt_number_format_help": "Variables: {YYYY}=annee, {MM}=mois, {DD}=jour, {N}=numero sequentiel. Ex: REC-{YYYY}{MM}{DD}-{N}",
       "timezone": "Fuseau horaire",
-      "timezone_help": "Fuseau horaire pour l'affichage de la date et l'heure sur les recus"
+      "timezone_help": "Fuseau horaire pour l'affichage de la date et l'heure sur les recus",
+      "pwa_settings": "Parametres PWA / Application Mobile",
+      "pwa_enabled": "Activer l'installation de l'application",
+      "pwa_app_name": "Nom de l'application",
+      "pwa_short_name": "Nom court (pour l'ecran d'accueil)",
+      "pwa_description": "Description de l'application",
+      "pwa_icon": "Icone de l'application (PNG, carre)",
+      "pwa_theme_color": "Couleur du theme",
+      "pwa_background_color": "Couleur d'arriere-plan"
+    },
+    "pwa": {
+        "install_title": "Installer l'application",
+        "install_desc": "Installez notre application pour un acces plus rapide et hors ligne.",
+        "install_btn": "Installer",
+        "later_btn": "Plus tard"
     },
     "users": {
       "title": "Gestion des utilisateurs",
@@ -231,7 +245,21 @@
       "receipt_number_format": "Receipt Number Format",
       "receipt_number_format_help": "Variables: {YYYY}=year, {MM}=month, {DD}=day, {N}=sequential number. Ex: REC-{YYYY}{MM}{DD}-{N}",
       "timezone": "Timezone",
-      "timezone_help": "Timezone for date and time display on receipts"
+      "timezone_help": "Timezone for date and time display on receipts",
+      "pwa_settings": "PWA / Mobile App Settings",
+      "pwa_enabled": "Enable App Installation",
+      "pwa_app_name": "App Name",
+      "pwa_short_name": "Short Name (for homescreen)",
+      "pwa_description": "App Description",
+      "pwa_icon": "App Icon (PNG, square)",
+      "pwa_theme_color": "Theme Color",
+      "pwa_background_color": "Background Color"
+    },
+    "pwa": {
+        "install_title": "Install App",
+        "install_desc": "Install our app for faster and offline access.",
+        "install_btn": "Install",
+        "later_btn": "Later"
     },
     "users": {
       "title": "User Management",
@@ -364,7 +392,21 @@
       "receipt_number_format": "صيغة رقم الايصال",
       "receipt_number_format_help": "المتغيرات: {YYYY}=السنة، {MM}=الشهر، {DD}=اليوم، {N}=الرقم التسلسلي. مثال: REC-{YYYY}{MM}{DD}-{N}",
       "timezone": "المنطقة الزمنية",
-      "timezone_help": "المنطقة الزمنية لعرض التاريخ والوقت على الايصالات"
+      "timezone_help": "المنطقة الزمنية لعرض التاريخ والوقت على الايصالات",
+      "pwa_settings": "اعدادات التطبيق / PWA",
+      "pwa_enabled": "تفعيل تثبيت التطبيق",
+      "pwa_app_name": "اسم التطبيق",
+      "pwa_short_name": "الاسم المختصر (للشاشة الرئيسية)",
+      "pwa_description": "وصف التطبيق",
+      "pwa_icon": "ايقونة التطبيق (PNG، مربع)",
+      "pwa_theme_color": "لون السمة",
+      "pwa_background_color": "لون الخلفية"
+    },
+    "pwa": {
+        "install_title": "تثبيت التطبيق",
+        "install_desc": "قم بتثبيت تطبيقنا للوصول بشكل اسرع وبدون اتصال بالانترنت.",
+        "install_btn": "تثبيت",
+        "later_btn": "لاحقا"
     },
     "users": {
       "title": "ادارة المستخدمين",
