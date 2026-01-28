@@ -16,7 +16,7 @@ def get_site_url():
         return f"https://{domain}"
 
     # 3. Fallback par défaut (ne sera utilisé que si rien d'autre n'est configuré)
-    return "https://quickreceipt.app"
+    return ""
 
 def _generate_thermal_receipt_task(receipt, client, company, settings):
     # Utiliser l'URL passée dans les settings en priorité, sinon chercher dans l'environnement
@@ -240,7 +240,7 @@ def _generate_thermal_receipt_task(receipt, client, company, settings):
         if not domain:
             domain = site_url
     except:
-        domain = os.environ.get('REPLIT_DEV_DOMAIN', 'quickreceipt.app')
+        domain = site_url
 
     text_bbox = draw.textbbox((0, 0), domain, font=font_text)
     text_width = text_bbox[2] - text_bbox[0]
