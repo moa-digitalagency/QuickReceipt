@@ -1,4 +1,5 @@
 import os
+from flask import request
 from utils.i18n import t
 
 def get_site_url():
@@ -6,12 +7,12 @@ def get_site_url():
     if os.environ.get('SITE_URL'):
         return os.environ.get('SITE_URL').rstrip('/')
 
-    # 2. Vérifier l'environnement Replit
-    domain = os.environ.get('REPLIT_DEV_DOMAIN', '')
-    if domain:
-        return f"https://{domain}"
+    # 2. Essayer de récupérer l'URL depuis le contexte de la requête Flask
+    try:
+        return request.url_root.rstrip('/')
+    except Exception:
+        pass
 
-    # Plus de fallback vers "quickreceipt.app" comme demandé.
     # On retourne une chaine vide si rien n'est configuré.
     return ""
 
