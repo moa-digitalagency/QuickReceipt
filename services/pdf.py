@@ -7,16 +7,23 @@ from reportlab.lib.units import mm
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from utils.i18n import t
 import qrcode
+from urllib.parse import urlparse
 
 def get_site_url():
     domain = os.environ.get('REPLIT_DEV_DOMAIN', '')
     if domain:
         return f"https://{domain}"
-    return "https://quickreceipt.app"
+    return ""
 
 def generate_receipt_pdf(receipt, client, company, settings):
-    site_url = get_site_url()
-    domain = os.environ.get('REPLIT_DEV_DOMAIN', 'quickreceipt.app')
+    site_url = settings.get('site_url') or get_site_url()
+
+    try:
+        domain = urlparse(site_url).netloc
+        if not domain:
+            domain = site_url
+    except:
+        domain = site_url
     
     buffer = BytesIO()
     doc = SimpleDocTemplate(

@@ -125,6 +125,7 @@ def download_pdf(receipt_id):
     client = Client.get_by_id(receipt.get('client_id'), user_id=user_id)
     company = Company.get_by_id(receipt.get('company_id'), user_id=user_id)
     settings = Settings.get(user_id=user_id)
+    settings['site_url'] = request.url_root.rstrip('/')
     
     buffer = generate_receipt_pdf(receipt, client, company, settings)
     
@@ -145,6 +146,7 @@ def download_thermal(receipt_id):
     client = Client.get_by_id(receipt.get('client_id'), user_id=user_id)
     company = Company.get_by_id(receipt.get('company_id'), user_id=user_id)
     settings = Settings.get(user_id=user_id)
+    settings['site_url'] = request.url_root.rstrip('/')
     
     buffer = generate_thermal_receipt(receipt, client, company, settings)
     
