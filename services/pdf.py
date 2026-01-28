@@ -8,11 +8,17 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from utils.i18n import t
 import qrcode
 from urllib.parse import urlparse
+from flask import request
 
 def get_site_url():
-    domain = os.environ.get('REPLIT_DEV_DOMAIN', '')
-    if domain:
-        return f"https://{domain}"
+    if os.environ.get('SITE_URL'):
+        return os.environ.get('SITE_URL').rstrip('/')
+
+    try:
+        return request.url_root.rstrip('/')
+    except Exception:
+        pass
+
     return ""
 
 def generate_receipt_pdf(receipt, client, company, settings):
