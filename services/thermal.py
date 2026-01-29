@@ -4,24 +4,10 @@ from concurrent.futures import ProcessPoolExecutor
 from PIL import Image, ImageDraw, ImageFont
 import qrcode
 from urllib.parse import urlparse  # Ajout pour extraire le domaine proprement
-from flask import request
-
-def get_site_url():
-    # 1. Vérifier d'abord une variable d'environnement standard pour l'URL du site
-    if os.environ.get('SITE_URL'):
-        return os.environ.get('SITE_URL').rstrip('/')
-
-    # 2. Essayer de récupérer l'URL depuis le contexte de la requête Flask
-    try:
-        return request.url_root.rstrip('/')
-    except Exception:
-        pass
-
-    return ""
 
 def _generate_thermal_receipt_task(receipt, client, company, settings):
     # Utiliser l'URL passée dans les settings en priorité, sinon chercher dans l'environnement
-    site_url = settings.get('site_url') or get_site_url()
+    site_url = settings.get('site_url', '')
 
     thermal_width_mm = int(settings.get('thermal_width', 58))
 
