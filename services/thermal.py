@@ -85,7 +85,7 @@ def _generate_thermal_receipt_task(receipt, client, company, settings):
         except Exception as e:
             pass
 
-    company_name = company.get('name', '') if company else 'QuickReceipt'
+    company_name = company.get('name', '') if company else ''
     if company_name:
         company_name_upper = company_name.upper()
         text_bbox = draw.textbbox((0, 0), company_name_upper, font=font_title)

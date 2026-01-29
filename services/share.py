@@ -23,7 +23,7 @@ def get_share_message(receipt, client, company, settings=None):
     else:
         site_url = get_site_url()
 
-    company_name = company.get('name', 'QuickReceipt') if company else 'QuickReceipt'
+    company_name = company.get('name', '') if company else ''
     client_name = client.get('name', '') if client else ''
     amount = receipt.get('amount', '0')
     receipt_number = receipt.get('receipt_number', '')
