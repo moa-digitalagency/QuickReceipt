@@ -16,7 +16,6 @@ def share_data(receipt_id):
     company = Company.get_by_id(receipt.get('company_id'), user_id=user_id)
     
     settings = Settings.get(user_id=user_id)
-    settings['site_url'] = request.url_root.rstrip('/')
 
     return jsonify(get_share_message(receipt, client, company, settings))
 

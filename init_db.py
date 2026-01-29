@@ -82,6 +82,9 @@ class Settings(db.Model):
     pwa_background_color = db.Column(db.String(20), default='#ffffff')
     pwa_description = db.Column(db.String(255), default='Receipt Management Application')
 
+    # Global App Settings
+    site_url = db.Column(db.String(255), default='')
+
 def migrate_database(app):
     """Run migrations to add missing columns to existing tables"""
     with app.app_context():
@@ -176,6 +179,11 @@ def migrate_database(app):
                 'table': 'settings',
                 'column': 'pwa_description',
                 'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_description VARCHAR(255) DEFAULT 'Receipt Management Application'"
+            },
+            {
+                'table': 'settings',
+                'column': 'site_url',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS site_url VARCHAR(255) DEFAULT ''"
             },
         ]
         
@@ -298,6 +306,19 @@ def init_database(app):
         
         migrate_database(app)
         
+        # Force SITE_URL from environment if present (as requested for deployment)
+        site_url_env = os.environ.get('SITE_URL')
+        if site_url_env:
+            global_settings = Settings.query.filter(Settings.user_id.is_(None)).first()
+            if not global_settings:
+                global_settings = Settings(user_id=None)
+                db.session.add(global_settings)
+
+            # Update site_url
+            global_settings.site_url = site_url_env.rstrip('/')
+            db.session.commit()
+            print(f"Deployment: Forced site_url to '{global_settings.site_url}'")
+
         existing_admin = User.query.filter_by(username=os.environ.get('ADMIN_USERNAME', 'admin')).first()
         if not existing_admin:
             admin_username = os.environ.get('ADMIN_USERNAME', 'admin')

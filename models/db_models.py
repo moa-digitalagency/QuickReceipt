@@ -1,4 +1,6 @@
 import uuid
+import os
+from flask import request
 from datetime import datetime
 from init_db import db, Company as CompanyModel, Client as ClientModel, Receipt as ReceiptModel, Settings as SettingsModel, User as UserModel
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -355,10 +357,11 @@ class Settings:
             'pwa_icon_url': '/static/favicon.svg',
             'pwa_theme_color': '#3B82F6',
             'pwa_background_color': '#ffffff',
-            'pwa_description': 'Receipt Management Application'
+            'pwa_description': 'Receipt Management Application',
+            'site_url': ''
         }
 
-        # 1. Overlay Global Settings (PWA fields)
+        # 1. Overlay Global Settings (PWA fields & Site URL)
         global_settings = SettingsModel.query.filter(SettingsModel.user_id.is_(None)).first()
         if global_settings:
             defaults.update({
@@ -370,6 +373,25 @@ class Settings:
                 'pwa_background_color': getattr(global_settings, 'pwa_background_color', '#ffffff') or '#ffffff',
                 'pwa_description': getattr(global_settings, 'pwa_description', 'Receipt Management Application') or 'Receipt Management Application'
             })
+
+            # Use DB value for site_url if available
+            if hasattr(global_settings, 'site_url') and global_settings.site_url:
+                 defaults['site_url'] = global_settings.site_url
+
+        # Priority Override: Environment Variable > DB Value > Request URL
+        env_site_url = os.environ.get('SITE_URL')
+        if env_site_url:
+            defaults['site_url'] = env_site_url.rstrip('/')
+        elif not defaults['site_url']:
+            # Fallback to request.url_root if no Env var and no DB value
+            try:
+                if request:
+                    defaults['site_url'] = request.url_root.rstrip('/')
+            except RuntimeError:
+                # Working outside of request context
+                pass
+            except Exception:
+                pass
 
         # 2. Overlay User Settings (User Prefs)
         if user_id:
