@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('branding_seo.title') }} - {{ settings.branding_app_name or t('app.name') }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">{{ t('branding_seo.title') }}</h1>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="mb-4 p-4 rounded-lg {% if category == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        <!-- Branding Section -->
+        <div class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
+            <div class="p-6 border-b border-gray-200 bg-gray-50">
+                <h2 class="text-lg font-semibold text-gray-900">{{ t('branding_seo.branding_section') }}</h2>
+                <p class="text-sm text-gray-500">{{ t('branding_seo.branding_desc') }}</p>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('branding_seo.app_name') }}</label>
+                    <input type="text" name="branding_app_name" value="{{ settings.branding_app_name }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="{{ t('app.name') }}">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('branding_seo.logo') }}</label>
+                        {% if settings.branding_logo_url %}
+                            <div class="mb-2">
+                                <img src="{{ settings.branding_logo_url }}" alt="Logo" class="h-16 w-auto object-contain border rounded p-1">
+                            </div>
+                        {% endif %}
+                        <input type="file" name="branding_logo" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('branding_seo.favicon') }}</label>
+                        {% if settings.branding_favicon_url %}
+                            <div class="mb-2">
+                                <img src="{{ settings.branding_favicon_url }}" alt="Favicon" class="h-8 w-8 object-contain border rounded p-1">
+                            </div>
+                        {% endif %}
+                        <input type="file" name="branding_favicon" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Section -->
+        <div class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
+            <div class="p-6 border-b border-gray-200 bg-gray-50">
+                <h2 class="text-lg font-semibold text-gray-900">{{ t('branding_seo.seo_section') }}</h2>
+                <p class="text-sm text-gray-500">{{ t('branding_seo.seo_desc') }}</p>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('branding_seo.site_url') }}</label>
+                    <input type="url" name="site_url" value="{{ settings.site_url }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="https://example.com">
+                    <p class="mt-1 text-xs text-gray-500">{{ t('branding_seo.site_url_help') }}</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('branding_seo.title_suffix') }}</label>
+                    <input type="text" name="seo_title_suffix" value="{{ settings.seo_title_suffix }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder=" - {{ t('app.tagline') }}">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('branding_seo.meta_description') }}</label>
+                    <textarea name="seo_meta_description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">{{ settings.seo_meta_description }}</textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('branding_seo.keywords') }}</label>
+                    <input type="text" name="seo_keywords" value="{{ settings.seo_keywords }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="receipts, management, billing">
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced SEO (Open Graph) -->
+        <div class="bg-white shadow-sm rounded-xl border border-gray-200 overflow-hidden">
+            <div class="p-6 border-b border-gray-200 bg-gray-50">
+                <h2 class="text-lg font-semibold text-gray-900">{{ t('branding_seo.advanced_seo_section') }}</h2>
+                <p class="text-sm text-gray-500">{{ t('branding_seo.advanced_seo_desc') }}</p>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('branding_seo.og_title') }}</label>
+                    <input type="text" name="seo_og_title" value="{{ settings.seo_og_title }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('branding_seo.og_description') }}</label>
+                    <textarea name="seo_og_description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">{{ settings.seo_og_description }}</textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('branding_seo.og_image') }}</label>
+                    {% if settings.seo_og_image_url %}
+                        <div class="mb-2">
+                            <img src="{{ settings.seo_og_image_url }}" alt="OG Image" class="h-32 w-auto object-cover border rounded">
+                        </div>
+                    {% endif %}
+                    <input type="file" name="seo_og_image" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('branding_seo.twitter_card') }}</label>
+                    <select name="seo_twitter_card" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="summary" {% if settings.seo_twitter_card == 'summary' %}selected{% endif %}>Summary</option>
+                        <option value="summary_large_image" {% if settings.seo_twitter_card == 'summary_large_image' %}selected{% endif %}>Summary with Large Image</option>
+                        <option value="app" {% if settings.seo_twitter_card == 'app' %}selected{% endif %}>App</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end space-x-4">
+            <button type="submit" class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-colors">
+                {{ t('common.save') }}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
