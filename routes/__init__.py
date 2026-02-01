@@ -9,6 +9,7 @@ from routes.auth import auth_bp
 from routes.users import users_bp
 from routes.pwa import pwa_bp
 from routes.pwa_configuration import pwa_configuration_bp
+from routes.branding_seo import branding_seo_bp
 
 def register_routes(app):
     app.register_blueprint(auth_bp)
@@ -20,3 +21,4 @@ def register_routes(app):
     app.register_blueprint(users_bp)
     app.register_blueprint(pwa_bp)
     app.register_blueprint(pwa_configuration_bp)
+    app.register_blueprint(branding_seo_bp)

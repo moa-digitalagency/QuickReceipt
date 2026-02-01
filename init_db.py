@@ -82,6 +82,20 @@ class Settings(db.Model):
     pwa_background_color = db.Column(db.String(20), default='#ffffff')
     pwa_description = db.Column(db.String(255), default='Receipt Management Application')
 
+    # Branding Settings
+    branding_app_name = db.Column(db.String(100), default='')
+    branding_logo_url = db.Column(db.String(255), default='')
+    branding_favicon_url = db.Column(db.String(255), default='')
+
+    # SEO Settings
+    seo_title_suffix = db.Column(db.String(100), default='')
+    seo_meta_description = db.Column(db.String(255), default='')
+    seo_keywords = db.Column(db.String(255), default='')
+    seo_og_title = db.Column(db.String(100), default='')
+    seo_og_description = db.Column(db.String(255), default='')
+    seo_og_image_url = db.Column(db.String(255), default='')
+    seo_twitter_card = db.Column(db.String(50), default='summary_large_image')
+
     # Global App Settings
     site_url = db.Column(db.String(255), default='')
 
@@ -184,6 +198,56 @@ def migrate_database(app):
                 'table': 'settings',
                 'column': 'site_url',
                 'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS site_url VARCHAR(255) DEFAULT ''"
+            },
+            {
+                'table': 'settings',
+                'column': 'branding_app_name',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS branding_app_name VARCHAR(100) DEFAULT ''"
+            },
+            {
+                'table': 'settings',
+                'column': 'branding_logo_url',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS branding_logo_url VARCHAR(255) DEFAULT ''"
+            },
+            {
+                'table': 'settings',
+                'column': 'branding_favicon_url',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS branding_favicon_url VARCHAR(255) DEFAULT ''"
+            },
+            {
+                'table': 'settings',
+                'column': 'seo_title_suffix',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_title_suffix VARCHAR(100) DEFAULT ''"
+            },
+            {
+                'table': 'settings',
+                'column': 'seo_meta_description',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_meta_description VARCHAR(255) DEFAULT ''"
+            },
+            {
+                'table': 'settings',
+                'column': 'seo_keywords',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_keywords VARCHAR(255) DEFAULT ''"
+            },
+            {
+                'table': 'settings',
+                'column': 'seo_og_title',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_og_title VARCHAR(100) DEFAULT ''"
+            },
+            {
+                'table': 'settings',
+                'column': 'seo_og_description',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_og_description VARCHAR(255) DEFAULT ''"
+            },
+            {
+                'table': 'settings',
+                'column': 'seo_og_image_url',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_og_image_url VARCHAR(255) DEFAULT ''"
+            },
+            {
+                'table': 'settings',
+                'column': 'seo_twitter_card',
+                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_twitter_card VARCHAR(50) DEFAULT 'summary_large_image'"
             },
         ]
         

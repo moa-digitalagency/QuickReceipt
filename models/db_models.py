@@ -358,10 +358,20 @@ class Settings:
             'pwa_theme_color': '#3B82F6',
             'pwa_background_color': '#ffffff',
             'pwa_description': 'Receipt Management Application',
+            'branding_app_name': '',
+            'branding_logo_url': '',
+            'branding_favicon_url': '',
+            'seo_title_suffix': '',
+            'seo_meta_description': '',
+            'seo_keywords': '',
+            'seo_og_title': '',
+            'seo_og_description': '',
+            'seo_og_image_url': '',
+            'seo_twitter_card': 'summary_large_image',
             'site_url': ''
         }
 
-        # 1. Overlay Global Settings (PWA fields & Site URL)
+        # 1. Overlay Global Settings (PWA fields, Branding, SEO & Site URL)
         global_settings = SettingsModel.query.filter(SettingsModel.user_id.is_(None)).first()
         if global_settings:
             defaults.update({
@@ -371,7 +381,17 @@ class Settings:
                 'pwa_icon_url': getattr(global_settings, 'pwa_icon_url', '/static/favicon.svg') or '/static/favicon.svg',
                 'pwa_theme_color': getattr(global_settings, 'pwa_theme_color', '#3B82F6') or '#3B82F6',
                 'pwa_background_color': getattr(global_settings, 'pwa_background_color', '#ffffff') or '#ffffff',
-                'pwa_description': getattr(global_settings, 'pwa_description', 'Receipt Management Application') or 'Receipt Management Application'
+                'pwa_description': getattr(global_settings, 'pwa_description', 'Receipt Management Application') or 'Receipt Management Application',
+                'branding_app_name': getattr(global_settings, 'branding_app_name', '') or '',
+                'branding_logo_url': getattr(global_settings, 'branding_logo_url', '') or '',
+                'branding_favicon_url': getattr(global_settings, 'branding_favicon_url', '') or '',
+                'seo_title_suffix': getattr(global_settings, 'seo_title_suffix', '') or '',
+                'seo_meta_description': getattr(global_settings, 'seo_meta_description', '') or '',
+                'seo_keywords': getattr(global_settings, 'seo_keywords', '') or '',
+                'seo_og_title': getattr(global_settings, 'seo_og_title', '') or '',
+                'seo_og_description': getattr(global_settings, 'seo_og_description', '') or '',
+                'seo_og_image_url': getattr(global_settings, 'seo_og_image_url', '') or '',
+                'seo_twitter_card': getattr(global_settings, 'seo_twitter_card', 'summary_large_image') or 'summary_large_image'
             })
 
             # Use DB value for site_url if available
@@ -415,7 +435,17 @@ class Settings:
             'pwa_icon_url': '/static/favicon.svg',
             'pwa_theme_color': '#3B82F6',
             'pwa_background_color': '#ffffff',
-            'pwa_description': 'Receipt Management Application'
+            'pwa_description': 'Receipt Management Application',
+            'branding_app_name': '',
+            'branding_logo_url': '',
+            'branding_favicon_url': '',
+            'seo_title_suffix': '',
+            'seo_meta_description': '',
+            'seo_keywords': '',
+            'seo_og_title': '',
+            'seo_og_description': '',
+            'seo_og_image_url': '',
+            'seo_twitter_card': 'summary_large_image'
         }
 
         settings = SettingsModel.query.filter(SettingsModel.user_id.is_(None)).first()
@@ -427,7 +457,17 @@ class Settings:
                 'pwa_icon_url': getattr(settings, 'pwa_icon_url', '/static/favicon.svg') or '/static/favicon.svg',
                 'pwa_theme_color': getattr(settings, 'pwa_theme_color', '#3B82F6') or '#3B82F6',
                 'pwa_background_color': getattr(settings, 'pwa_background_color', '#ffffff') or '#ffffff',
-                'pwa_description': getattr(settings, 'pwa_description', 'Receipt Management Application') or 'Receipt Management Application'
+                'pwa_description': getattr(settings, 'pwa_description', 'Receipt Management Application') or 'Receipt Management Application',
+                'branding_app_name': getattr(settings, 'branding_app_name', '') or '',
+                'branding_logo_url': getattr(settings, 'branding_logo_url', '') or '',
+                'branding_favicon_url': getattr(settings, 'branding_favicon_url', '') or '',
+                'seo_title_suffix': getattr(settings, 'seo_title_suffix', '') or '',
+                'seo_meta_description': getattr(settings, 'seo_meta_description', '') or '',
+                'seo_keywords': getattr(settings, 'seo_keywords', '') or '',
+                'seo_og_title': getattr(settings, 'seo_og_title', '') or '',
+                'seo_og_description': getattr(settings, 'seo_og_description', '') or '',
+                'seo_og_image_url': getattr(settings, 'seo_og_image_url', '') or '',
+                'seo_twitter_card': getattr(settings, 'seo_twitter_card', 'summary_large_image') or 'summary_large_image'
             })
         return defaults
     
@@ -463,5 +503,29 @@ class Settings:
             settings.pwa_background_color = settings_dict.get('pwa_background_color', '#ffffff')
         if hasattr(settings, 'pwa_description'):
             settings.pwa_description = settings_dict.get('pwa_description', 'Receipt Management Application')
+
+        # Branding Fields
+        if hasattr(settings, 'branding_app_name'):
+            settings.branding_app_name = settings_dict.get('branding_app_name', '')
+        if hasattr(settings, 'branding_logo_url'):
+            settings.branding_logo_url = settings_dict.get('branding_logo_url', '')
+        if hasattr(settings, 'branding_favicon_url'):
+            settings.branding_favicon_url = settings_dict.get('branding_favicon_url', '')
+
+        # SEO Fields
+        if hasattr(settings, 'seo_title_suffix'):
+            settings.seo_title_suffix = settings_dict.get('seo_title_suffix', '')
+        if hasattr(settings, 'seo_meta_description'):
+            settings.seo_meta_description = settings_dict.get('seo_meta_description', '')
+        if hasattr(settings, 'seo_keywords'):
+            settings.seo_keywords = settings_dict.get('seo_keywords', '')
+        if hasattr(settings, 'seo_og_title'):
+            settings.seo_og_title = settings_dict.get('seo_og_title', '')
+        if hasattr(settings, 'seo_og_description'):
+            settings.seo_og_description = settings_dict.get('seo_og_description', '')
+        if hasattr(settings, 'seo_og_image_url'):
+            settings.seo_og_image_url = settings_dict.get('seo_og_image_url', '')
+        if hasattr(settings, 'seo_twitter_card'):
+            settings.seo_twitter_card = settings_dict.get('seo_twitter_card', 'summary_large_image')
 
         db.session.commit()
