@@ -107,147 +107,148 @@ def migrate_database(app):
         handled_columns = set()
 
         # 1. Manual/Historical Migrations
+        # Note: IF NOT EXISTS removed from SQL because we check existence in Python.
         migrations = [
             {
                 'table': 'settings',
                 'column': 'user_id',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS user_id VARCHAR(36) REFERENCES users(id)"
+                'sql': "ALTER TABLE settings ADD COLUMN user_id VARCHAR(36) REFERENCES users(id)"
             },
             {
                 'table': 'settings',
                 'column': 'thermal_width',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS thermal_width INTEGER DEFAULT 58"
+                'sql': "ALTER TABLE settings ADD COLUMN thermal_width INTEGER DEFAULT 58"
             },
             {
                 'table': 'settings',
                 'column': 'receipt_number_format',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS receipt_number_format VARCHAR(50) DEFAULT 'REC-{YYYY}{MM}{DD}-{N}'"
+                'sql': "ALTER TABLE settings ADD COLUMN receipt_number_format VARCHAR(50) DEFAULT 'REC-{YYYY}{MM}{DD}-{N}'"
             },
             {
                 'table': 'settings',
                 'column': 'timezone',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS timezone VARCHAR(50) DEFAULT 'Africa/Casablanca'"
+                'sql': "ALTER TABLE settings ADD COLUMN timezone VARCHAR(50) DEFAULT 'Africa/Casablanca'"
             },
             {
                 'table': 'companies',
                 'column': 'user_id',
-                'sql': "ALTER TABLE companies ADD COLUMN IF NOT EXISTS user_id VARCHAR(36) REFERENCES users(id)"
+                'sql': "ALTER TABLE companies ADD COLUMN user_id VARCHAR(36) REFERENCES users(id)"
             },
             {
                 'table': 'companies',
                 'column': 'logo',
-                'sql': "ALTER TABLE companies ADD COLUMN IF NOT EXISTS logo VARCHAR(255) DEFAULT ''"
+                'sql': "ALTER TABLE companies ADD COLUMN logo VARCHAR(255) DEFAULT ''"
             },
             {
                 'table': 'clients',
                 'column': 'user_id',
-                'sql': "ALTER TABLE clients ADD COLUMN IF NOT EXISTS user_id VARCHAR(36) REFERENCES users(id)"
+                'sql': "ALTER TABLE clients ADD COLUMN user_id VARCHAR(36) REFERENCES users(id)"
             },
             {
                 'table': 'receipts',
                 'column': 'user_id',
-                'sql': "ALTER TABLE receipts ADD COLUMN IF NOT EXISTS user_id VARCHAR(36) REFERENCES users(id)"
+                'sql': "ALTER TABLE receipts ADD COLUMN user_id VARCHAR(36) REFERENCES users(id)"
             },
             {
                 'table': 'receipts',
                 'column': 'company_id',
-                'sql': "ALTER TABLE receipts ADD COLUMN IF NOT EXISTS company_id VARCHAR(36)"
+                'sql': "ALTER TABLE receipts ADD COLUMN company_id VARCHAR(36)"
             },
             {
                 'table': 'users',
                 'column': 'is_active',
-                'sql': "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE"
+                'sql': "ALTER TABLE users ADD COLUMN is_active BOOLEAN DEFAULT TRUE"
             },
             # PWA Migrations
             {
                 'table': 'settings',
                 'column': 'pwa_enabled',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_enabled BOOLEAN DEFAULT TRUE"
+                'sql': "ALTER TABLE settings ADD COLUMN pwa_enabled BOOLEAN DEFAULT TRUE"
             },
             {
                 'table': 'settings',
                 'column': 'pwa_app_name',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_app_name VARCHAR(100) DEFAULT 'Receipt App'"
+                'sql': "ALTER TABLE settings ADD COLUMN pwa_app_name VARCHAR(100) DEFAULT 'Receipt App'"
             },
             {
                 'table': 'settings',
                 'column': 'pwa_short_name',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_short_name VARCHAR(50) DEFAULT 'Receipts'"
+                'sql': "ALTER TABLE settings ADD COLUMN pwa_short_name VARCHAR(50) DEFAULT 'Receipts'"
             },
             {
                 'table': 'settings',
                 'column': 'pwa_icon_url',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_icon_url VARCHAR(255) DEFAULT '/static/favicon.svg'"
+                'sql': "ALTER TABLE settings ADD COLUMN pwa_icon_url VARCHAR(255) DEFAULT '/static/favicon.svg'"
             },
             {
                 'table': 'settings',
                 'column': 'pwa_theme_color',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_theme_color VARCHAR(20) DEFAULT '#3B82F6'"
+                'sql': "ALTER TABLE settings ADD COLUMN pwa_theme_color VARCHAR(20) DEFAULT '#3B82F6'"
             },
             {
                 'table': 'settings',
                 'column': 'pwa_background_color',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_background_color VARCHAR(20) DEFAULT '#ffffff'"
+                'sql': "ALTER TABLE settings ADD COLUMN pwa_background_color VARCHAR(20) DEFAULT '#ffffff'"
             },
             {
                 'table': 'settings',
                 'column': 'pwa_description',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS pwa_description VARCHAR(255) DEFAULT 'Receipt Management Application'"
+                'sql': "ALTER TABLE settings ADD COLUMN pwa_description VARCHAR(255) DEFAULT 'Receipt Management Application'"
             },
             {
                 'table': 'settings',
                 'column': 'site_url',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS site_url VARCHAR(255) DEFAULT ''"
+                'sql': "ALTER TABLE settings ADD COLUMN site_url VARCHAR(255) DEFAULT ''"
             },
             {
                 'table': 'settings',
                 'column': 'branding_app_name',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS branding_app_name VARCHAR(100) DEFAULT ''"
+                'sql': "ALTER TABLE settings ADD COLUMN branding_app_name VARCHAR(100) DEFAULT ''"
             },
             {
                 'table': 'settings',
                 'column': 'branding_logo_url',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS branding_logo_url VARCHAR(255) DEFAULT ''"
+                'sql': "ALTER TABLE settings ADD COLUMN branding_logo_url VARCHAR(255) DEFAULT ''"
             },
             {
                 'table': 'settings',
                 'column': 'branding_favicon_url',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS branding_favicon_url VARCHAR(255) DEFAULT ''"
+                'sql': "ALTER TABLE settings ADD COLUMN branding_favicon_url VARCHAR(255) DEFAULT ''"
             },
             {
                 'table': 'settings',
                 'column': 'seo_title_suffix',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_title_suffix VARCHAR(100) DEFAULT ''"
+                'sql': "ALTER TABLE settings ADD COLUMN seo_title_suffix VARCHAR(100) DEFAULT ''"
             },
             {
                 'table': 'settings',
                 'column': 'seo_meta_description',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_meta_description VARCHAR(255) DEFAULT ''"
+                'sql': "ALTER TABLE settings ADD COLUMN seo_meta_description VARCHAR(255) DEFAULT ''"
             },
             {
                 'table': 'settings',
                 'column': 'seo_keywords',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_keywords VARCHAR(255) DEFAULT ''"
+                'sql': "ALTER TABLE settings ADD COLUMN seo_keywords VARCHAR(255) DEFAULT ''"
             },
             {
                 'table': 'settings',
                 'column': 'seo_og_title',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_og_title VARCHAR(100) DEFAULT ''"
+                'sql': "ALTER TABLE settings ADD COLUMN seo_og_title VARCHAR(100) DEFAULT ''"
             },
             {
                 'table': 'settings',
                 'column': 'seo_og_description',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_og_description VARCHAR(255) DEFAULT ''"
+                'sql': "ALTER TABLE settings ADD COLUMN seo_og_description VARCHAR(255) DEFAULT ''"
             },
             {
                 'table': 'settings',
                 'column': 'seo_og_image_url',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_og_image_url VARCHAR(255) DEFAULT ''"
+                'sql': "ALTER TABLE settings ADD COLUMN seo_og_image_url VARCHAR(255) DEFAULT ''"
             },
             {
                 'table': 'settings',
                 'column': 'seo_twitter_card',
-                'sql': "ALTER TABLE settings ADD COLUMN IF NOT EXISTS seo_twitter_card VARCHAR(50) DEFAULT 'summary_large_image'"
+                'sql': "ALTER TABLE settings ADD COLUMN seo_twitter_card VARCHAR(50) DEFAULT 'summary_large_image'"
             },
         ]
         
@@ -283,50 +284,62 @@ def migrate_database(app):
 
                     if column.name not in existing_columns:
                         # Determine column type
-                        col_type = str(column.type)
+                        col_type = "TEXT" # Default fallback
 
-                        # Normalize type for SQL
-                        if 'String' in str(type(column.type)):
-                            length = column.type.length
+                        col_type_obj = column.type
+                        col_type_str = str(type(col_type_obj))
+
+                        if 'String' in col_type_str or 'VARCHAR' in str(col_type_obj):
+                            length = getattr(col_type_obj, 'length', None)
                             col_type = f"VARCHAR({length})" if length else "TEXT"
-                        elif 'Integer' in str(type(column.type)):
+                        elif 'Integer' in col_type_str:
                             col_type = "INTEGER"
-                        elif 'Boolean' in str(type(column.type)):
+                        elif 'Boolean' in col_type_str:
+                            # Use BOOLEAN for Postgres/Standard, DB engine handles specifics (sqlite uses 0/1)
                             col_type = "BOOLEAN"
-                        elif 'DateTime' in str(type(column.type)):
+                        elif 'DateTime' in col_type_str:
                             col_type = "TIMESTAMP"
-                        elif 'Numeric' in str(type(column.type)):
-                             col_type = f"NUMERIC({column.type.precision}, {column.type.scale})"
-                        elif 'Text' in str(type(column.type)):
+                        elif 'Numeric' in col_type_str:
+                             precision = getattr(col_type_obj, 'precision', 10)
+                             scale = getattr(col_type_obj, 'scale', 2)
+                             col_type = f"NUMERIC({precision}, {scale})"
+                        elif 'Text' in col_type_str:
                             col_type = "TEXT"
 
                         # Handle Default Values
                         default_clause = ""
                         if column.default is not None:
                             if hasattr(column.default, 'arg'):
-                                if isinstance(column.default.arg, str):
+                                arg = column.default.arg
+                                if isinstance(arg, str):
                                     # Escape single quotes for SQL safety
-                                    escaped_arg = column.default.arg.replace("'", "''")
+                                    escaped_arg = arg.replace("'", "''")
                                     default_clause = f" DEFAULT '{escaped_arg}'"
-                                elif isinstance(column.default.arg, (int, float)):
-                                     default_clause = f" DEFAULT {column.default.arg}"
-                                elif isinstance(column.default.arg, bool):
-                                     default_clause = f" DEFAULT {'TRUE' if column.default.arg else 'FALSE'}"
+                                elif isinstance(arg, (int, float)):
+                                     default_clause = f" DEFAULT {arg}"
+                                elif isinstance(arg, bool):
+                                     default_clause = f" DEFAULT {'TRUE' if arg else 'FALSE'}"
+                                # We deliberately ignore callables/functions like datetime.utcnow
+                                # as they can't be safely converted to SQL defaults without DB-specific functions
 
                         # Handle Foreign Keys
                         fk_clause = ""
                         if column.foreign_keys:
                             fk = list(column.foreign_keys)[0]
-                            # fk.target_fullname is usually 'tablename.columnname'
                             try:
-                                target_table, target_col = fk.target_fullname.split('.')
-                                fk_clause = f" REFERENCES {target_table}({target_col})"
-                            except ValueError:
-                                # Fallback if split fails
+                                # fk.target_fullname is usually 'tablename.columnname'
+                                # but can be 'schema.tablename.columnname'
+                                parts = fk.target_fullname.split('.')
+                                if len(parts) >= 2:
+                                    target_table = parts[-2]
+                                    target_col = parts[-1]
+                                    fk_clause = f" REFERENCES {target_table}({target_col})"
+                            except (ValueError, IndexError):
+                                # Fallback or skip FK constraint if parsing fails
                                 pass
 
                         # Construct SQL
-                        # IF NOT EXISTS is redundant since we check in Python, and removing it improves compatibility (e.g. SQLite)
+                        # IF NOT EXISTS is removed as we check in Python
                         sql = f"ALTER TABLE {table_name} ADD COLUMN {column.name} {col_type}{fk_clause}{default_clause}"
 
                         try:
