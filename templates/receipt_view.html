@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ t('receipts.receipt') }} {{ receipt.receipt_number }} - {{ t('app.name') }}{% endblock %}
+{% block title %}{{ t('receipts.receipt') }} {{ receipt.receipt_number }} - {{ settings.branding_app_name or t('app.name') }}{% endblock %}
 
 {% block content %}
 <div class="max-w-3xl mx-auto">

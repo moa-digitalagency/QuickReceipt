@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{% if company %}{{ t('settings.edit_company') }}{% else %}{{ t('settings.add_company') }}{% endif %} - {{ t('app.name') }}{% endblock %}
+{% block title %}{% if company %}{{ t('settings.edit_company') }}{% else %}{{ t('settings.add_company') }}{% endif %} - {{ settings.branding_app_name or t('app.name') }}{% endblock %}
 
 {% block content %}
 <div class="max-w-2xl mx-auto">

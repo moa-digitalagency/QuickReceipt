@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ t('pwa.configuration_title') }} - {{ t('app.name') }}{% endblock %}
+{% block title %}{{ t('pwa.configuration_title') }} - {{ settings.branding_app_name or t('app.name') }}{% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto space-y-6">
