@@ -352,7 +352,8 @@
             // Check if user has already dismissed or installed, or if PWA is disabled
             // We want to show it on "first login" (or first visit) if enabled.
             // Using localStorage to track if we've shown it or user dismissed it.
-            if (pwaEnabled && !localStorage.getItem('pwaDismissed')) {
+            // Also check sessionStorage to ensure we only show it once per session if ignored
+            if (pwaEnabled && !localStorage.getItem('pwaDismissed') && !sessionStorage.getItem('pwaPromptShown')) {
                 showInstallModal();
             }
         });
@@ -360,6 +361,7 @@
         function showInstallModal() {
             installModal.classList.remove('hidden');
             installModal.classList.add('flex');
+            sessionStorage.setItem('pwaPromptShown', 'true');
         }
 
         function closeInstallModal() {
@@ -393,6 +395,77 @@
             localStorage.setItem('pwaInstalled', 'true');
             console.log('PWA was installed');
         });
+
+        // Pull-to-Refresh and Swipe Navigation Logic
+        let touchStartY = 0;
+        let touchStartX = 0;
+        let touchEndY = 0;
+        let touchEndX = 0;
+        const ptrThreshold = 150; // Pull down threshold
+        const swipeThreshold = 100; // Swipe horizontal threshold
+
+        const ptrIndicator = document.createElement('div');
+        ptrIndicator.id = 'ptr-indicator';
+        ptrIndicator.style.cssText = 'position: fixed; top: -60px; left: 0; right: 0; text-align: center; transition: top 0.3s ease; z-index: 9999; display: flex; justify-content: center; padding: 10px; pointer-events: none;';
+        ptrIndicator.innerHTML = '<div class="bg-white rounded-full p-2 shadow-lg"><svg class="w-6 h-6 text-blue-600 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></div>';
+        document.body.appendChild(ptrIndicator);
+
+        document.addEventListener('touchstart', e => {
+            if (e.changedTouches.length > 0) {
+                touchStartY = e.changedTouches[0].screenY;
+                touchStartX = e.changedTouches[0].screenX;
+            }
+        }, {passive: true});
+
+        document.addEventListener('touchmove', e => {
+            if (e.changedTouches.length > 0) {
+                const currentY = e.changedTouches[0].screenY;
+                const currentX = e.changedTouches[0].screenX;
+                const diffY = currentY - touchStartY;
+
+                // Visual feedback for Pull-to-Refresh
+                // Only if at top of page and pulling down
+                if (window.scrollY <= 0 && diffY > 0 && Math.abs(currentX - touchStartX) < diffY) {
+                    if (diffY < ptrThreshold + 50) {
+                        ptrIndicator.style.top = (diffY * 0.4 - 60) + 'px';
+                    }
+                }
+            }
+        }, {passive: true});
+
+        document.addEventListener('touchend', e => {
+            if (e.changedTouches.length > 0) {
+                touchEndY = e.changedTouches[0].screenY;
+                touchEndX = e.changedTouches[0].screenX;
+
+                handleGesture();
+            }
+
+            // Reset PTR indicator
+            ptrIndicator.style.top = '-60px';
+        }, {passive: true});
+
+        function handleGesture() {
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+
+            // Pull to Refresh
+            if (window.scrollY <= 0 && diffY > ptrThreshold && Math.abs(diffX) < Math.abs(diffY)) {
+                 window.location.reload();
+                 return;
+            }
+
+            // Horizontal Swipe
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > swipeThreshold) {
+                if (diffX < 0) {
+                    // Swipe Left (finger moves right to left) -> Go Back
+                    window.history.back();
+                } else {
+                    // Swipe Right (finger moves left to right) -> Go Forward
+                    window.history.forward();
+                }
+            }
+        }
     </script>
     {% block scripts %}{% endblock %}
 </body>
