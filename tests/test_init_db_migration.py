@@ -56,16 +56,11 @@ class TestMigration(unittest.TestCase):
 
             # 1. Manual migrations (companies.user_id is in manual list)
             # Since companies is in our mock, this should trigger.
-            companies_user_id_sql = [s for s in executed_sql if "ALTER TABLE companies ADD COLUMN IF NOT EXISTS user_id" in s]
+            companies_user_id_sql = [s for s in executed_sql if "ALTER TABLE companies ADD COLUMN user_id VARCHAR(36) REFERENCES users(id)" in s]
             self.assertTrue(len(companies_user_id_sql) >= 1, "Manual migration for companies.user_id missing")
 
             # Verify it wasn't executed twice (once manual, once dynamic)
             # Actually, since we mocked inspector to always say it's missing, if we didn't have 'handled_columns' check, it would run twice.
-            # But the SQL string is identical? No, manual SQL might differ slightly from dynamic SQL.
-            # Manual: ALTER TABLE companies ADD COLUMN IF NOT EXISTS user_id VARCHAR(36) REFERENCES users(id)
-            # Dynamic: ALTER TABLE companies ADD COLUMN IF NOT EXISTS user_id VARCHAR(36) REFERENCES users(id) (generated)
-            # They look identical.
-            # But we can check if it appears twice.
             self.assertEqual(len(companies_user_id_sql), 1, "companies.user_id migration executed multiple times (should be handled once)")
 
             # 2. Dynamic migrations for columns NOT in manual list
