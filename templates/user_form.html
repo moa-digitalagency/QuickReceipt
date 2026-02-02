@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{% if user %}{{ t('users.edit_user') }}{% else %}{{ t('users.add_user') }}{% endif %} - {{ t('app.name') }}{% endblock %}
+{% block title %}{% if user %}{{ t('users.edit_user') }}{% else %}{{ t('users.add_user') }}{% endif %} - {{ settings.branding_app_name or t('app.name') }}{% endblock %}
 
 {% block content %}
 <div class="max-w-xl mx-auto">

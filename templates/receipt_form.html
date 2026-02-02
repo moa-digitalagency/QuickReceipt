@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{% if receipt %}{{ t('receipts.edit') }}{% else %}{{ t('receipts.add') }}{% endif %} - {{ t('app.name') }}{% endblock %}
+{% block title %}{% if receipt %}{{ t('receipts.edit') }}{% else %}{{ t('receipts.add') }}{% endif %} - {{ settings.branding_app_name or t('app.name') }}{% endblock %}
 
 {% block content %}
 <div class="max-w-2xl mx-auto">
